@@ -41,18 +41,30 @@ void afficherTableCommutation(Switch r_switch)
 
 void init_station(Station* station, adresseIP adrIP, adresseMAC adrMAC)
 {
-    memcpy(&station->adrIP, &adrIP, TAILLE_IP_OCTETS);
-    memcpy(&station->adrMAC, &adrMAC, TAILLE_MAC_OCTETS);
+    memcpy(&(station->adrIP), &adrIP, TAILLE_IP_OCTETS);
+    memcpy(&(station->adrMAC), &adrMAC, TAILLE_MAC_OCTETS);
 }
 
-void init_port(port* r_port)
+void init_port(port* r_port, size_t numPort, size_t nbAdresses)
 {
-    r_port->nb_adressesMAC = 0;
-    r_port->num_port = 0;
-    r_port->tab_adresseMAC;
-};
+    r_port->num_port = numPort;
+    r_port->nb_adressesMAC = nbAdresses;
+    r_port->tab_adresseMAC = malloc(TAILLE_ADRESSE_MAX * sizeof(adresseMAC));
+}
 
-void init_switch(Switch* r_switch)
+void init_switch(Switch* r_switch, size_t nbPort, size_t numPriorite)
 {
-    r_switch
-};
+    r_switch -> nb_ports = nbPort;
+    r_switch -> priorite = numPriorite;
+    r_switch -> tab_commutation = malloc(nbPort * sizeof(port));
+
+    for(size_t i = 0; i < nbPort; i++)
+    {
+        init_port(&(r_switch->tab_commutation)[i], i, 0);
+    }
+}
+
+void ajouter_adresse_port(port* port, adresseMAC adrMAC)
+{   
+    port->tab_adresseMAC[port->nb_adressesMAC] = adrMAC;
+}
