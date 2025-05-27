@@ -50,6 +50,7 @@ void ajouter_sommet(graphe *g, sommet s_sommet);
 size_t index_sommet(graphe const *g, sommet s);
 bool existe_arete(graphe const *g, arete a);
 bool ajouter_arete(graphe *g, arete a);
+bool equals_sommet(sommet s1, sommet s2);
 size_t index_arete(graphe const *g, arete a);
 
 size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[]);

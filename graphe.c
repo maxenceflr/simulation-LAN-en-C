@@ -42,9 +42,38 @@ void ajouter_sommet(graphe *g, sommet s_sommet)
 }
 
 size_t index_sommet(graphe const *g, sommet s)
-{   
-    return (s < ordre(g)) ? s : UNKNOWN_INDEX;
+{
+    for (size_t index = 0; index < g->ordre; index++)
+    {
+        if(equals_sommet(g->sommet[index], s))
+        {
+            return index;
+        }
+    }
+
+    return UNKNOWN_INDEX;
 }
+
+bool equals_sommet(sommet s1, sommet s2)
+{
+    if (s1.type_equipement == s2.type_equipement)
+    {
+        if (s1.type_equipement == TYPE_STATION)
+        {
+            return equals_station(s1.station, s2.station);
+        }
+        else
+        {
+            return equals_switch(s1.s_switch, s2.s_switch);
+        }
+    }
+    else 
+    {
+        return false;
+    }
+}
+
+
 
 // Une fonction locale "static arete swap_sommets(arete a)" pourra être utile
 // cette fonction retourne une nouvelle arête dont les sommets sont les même que l'arête reçue mais inversés
@@ -59,7 +88,7 @@ arete swap_sommets(arete a)
 
 bool equalsArete(arete a1, arete a2)
 {
-    return ((a1.s1 == a2.s1) && (a1.s2 == a2.s2)) || ((a1.s1 == a2.s2) && (a1.s2 == a2.s1));
+    return (equals_sommet(a1.s1, a2.s1) && equals_sommet(a1.s2, a2.s2)) || (equals_sommet(a1.s1, a2.s2) && equals_sommet(a1.s2, a2.s1));
 }
 
 // Une fonction locale "static arete swap_sommets(arete a)" pourra être utile
@@ -88,7 +117,7 @@ bool ajouter_arete(graphe *g, arete a)
     //  - les sommets s1 et s2 de a sont distincts
     //  - l'arête a n'existe pas dans g
 
-    if( (a.s1 != a.s2) && (index_sommet(g, a.s1) != UNKNOWN_INDEX && index_sommet(g, a.s2) != UNKNOWN_INDEX) && !existe_arete(g, a) )
+    if( !equals_sommet(a.s1, a.s2) && (index_sommet(g, a.s1) != UNKNOWN_INDEX && index_sommet(g, a.s2) != UNKNOWN_INDEX) && !existe_arete(g, a) )
     {
         if (g->nb_aretes == g->aretes_capacite)
         {
@@ -142,12 +171,12 @@ size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[])
 
     for(size_t i = 0; i < g->nb_aretes; i++)
     {
-        if (g->aretes[i].s1 == s)
+        if (equals_sommet(g->aretes[i].s1, s))
         {
             sa[nb_sommets_stockes] = g->aretes[i].s2;
             nb_sommets_stockes ++;
         }
-        else if (g->aretes[i].s2 == s)
+        else if (equals_sommet(g->aretes[i].s2, s))
         {
             sa[nb_sommets_stockes] = g->aretes[i].s1;
             nb_sommets_stockes ++;
@@ -176,10 +205,10 @@ void afficher(graphe const *g)
     printf("# arêtes  = %lu\n", g->nb_aretes);
     printf("--SOMMETS--\n");
 
-    for (size_t sommet = 0; sommet < g->ordre; sommet++)
+    for (size_t index = 0; index < g->ordre; index++)
     {   
-        size_t sa[SOMMET_MAX];
-        size_t nb_sommet_ajd = sommets_adjacents(g, sommet, sa);
+        size_t sa[NOMBRE_SOMMETS_MAX];
+        size_t nb_sommet_ajd = sommets_adjacents(g, g->sommet[index], sa);
 
         printf("%lu (degré: %lu) <-> ", sommet, degre(g, sommet));
         afficher_tab(sa, nb_sommet_ajd);
