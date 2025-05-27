@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #define TAILLE_MAC_OCTETS 6
 #define TAILLE_IP_OCTETS 4
@@ -61,3 +62,6 @@ void init_switch(Switch* r_switch, size_t nbPort, size_t numPriorite);
 // Fonctions utilitaires
 
 void ajouter_adresse_port(port* port, adresseMAC adrMAC);
+bool equals_port(port p1, port p2);
+bool equals_switch(Switch s1, Switch s2);
+bool equals_station(Station s1, Station s2);

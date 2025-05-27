@@ -68,3 +68,50 @@ void ajouter_adresse_port(port* port, adresseMAC adrMAC)
 {   
     port->tab_adresseMAC[port->nb_adressesMAC] = adrMAC;
 }
+
+bool equals_port(port p1, port p2)
+{
+    bool first_step = p1.num_port == p2.num_port && p1.nb_adressesMAC == p2.nb_adressesMAC;
+
+    if (first_step)
+    {
+        for (size_t i = 0; i < p1.nb_adressesMAC; i++)
+        {
+            if(p1.tab_adresseMAC[i].entier != p2.tab_adresseMAC[i].entier)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool equals_station(Station s1, Station s2)
+{
+    return s1.adrIP.entier == s2.adrIP.entier && s1.adrMAC.entier == s2.adrMAC.entier; 
+}
+
+bool equals_switch(Switch s1, Switch s2)
+{
+    bool first_step = s1.adrMac.entier == s2.adrMac.entier && s1.nb_ports == s2.nb_ports && s1.priorite == s2.priorite;
+
+    if (first_step)
+    {
+        for (size_t i = 0; i < s1.nb_ports; i++)
+        {
+            if (!equals_port(s1.tab_commutation[i], s2.tab_commutation[i]))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
