@@ -3,7 +3,6 @@
 
 #define TAILLE_MAC_OCTETS 6
 #define TAILLE_IP_OCTETS 4
-#define TAILLE_MAX_ADRESSEMAC 500
 
 // Structure de donnée représentant une adresse MAC
 
@@ -23,7 +22,7 @@ typedef struct {
 
 typedef struct Station
 {
-    adresseMAC adrMac;
+    adresseMAC adrMAC;
     adresseIP adrIP;
 }Station;
 
@@ -54,4 +53,10 @@ void afficherMAC(adresseMAC adresse);
 void afficherTableCommutation(Switch sswitch);
 
 // Fonctions d'initialisation 
+
+void init_station(Station* station, adresseIP adrIP, adresseMAC adrMAC);
+void init_port(port* r_port);
+void init_switch(Switch* r_switch);
+
+// Fonctions utilitaires
 
