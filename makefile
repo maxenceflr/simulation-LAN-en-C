@@ -1,10 +1,11 @@
 FLAGS=-Wall -Wextra -Werror -Wno-unused-parameter -pedantic
-all : reseau, initreseau
+all : main
 
 reseau : reseau.c reseau.h
 	gcc -c reseau.c ${FLAGS}
 
-initreseau : initreseau.c 
-	gcc -c initreseau.c ${FLAGS}
+initReseau : initReseau.c filesystem.o
+	gcc -o initReseau.c filesystem.o ${FLAGS}
 
-
+clean:
+	rm *.o
