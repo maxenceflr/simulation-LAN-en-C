@@ -49,6 +49,8 @@ void init_sommet_switch(sommet* s, adresseMAC adrMAC,size_t nbPort, size_t numPr
 size_t ordre(graphe const *g);
 size_t nb_aretes(graphe const *g);
 
+void ajouter_sommet_station(graphe *g, Station station);
+void ajouter_sommet_switch(graphe *g, Switch s_switch);
 void ajouter_sommet(graphe *g, sommet s_sommet);
 size_t index_sommet(graphe const *g, sommet s);
 bool existe_arete(graphe const *g, arete a);
