@@ -24,7 +24,8 @@ typedef union sommet
 typedef struct arete
 {
     sommet s1;
-    sommet s2;   
+    sommet s2;
+    size_t poid;   
 } arete;
 
 typedef struct graphe
@@ -40,8 +41,10 @@ typedef struct graphe
 } graphe;
 
 
-void init_graphe(graphe *g, size_t nb_sommet);
+void init_graphe(graphe *g, size_t nb_sommet, size_t nbAretes);
 void deinit_graphe(graphe *g);
+void init_sommet_station(sommet* s, adresseIP adrIP, adresseMAC adrMAC);
+void init_sommet_switch(sommet* s, adresseMAC adrMAC,size_t nbPort, size_t numPriorite, adresseMAC adrMac);
 
 size_t ordre(graphe const *g);
 size_t nb_aretes(graphe const *g);

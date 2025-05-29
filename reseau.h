@@ -57,11 +57,13 @@ void afficherTableCommutation(Switch sswitch);
 
 void init_station(Station* station, adresseIP adrIP, adresseMAC adrMAC);
 void init_port(port* r_port, size_t num_port, size_t nbAdresses);
-void init_switch(Switch* r_switch, size_t nbPort, size_t numPriorite);
+void init_switch(Switch* r_switch, size_t nbPort, size_t numPriorite, adresseMAC adrMac);
 
 // Fonctions utilitaires
 
 void ajouter_adresse_port(port* port, adresseMAC adrMAC);
+void ajouter_sommet_station(graphe *g, Station station);
+void ajouter_sommet_switch(graphe *g, Switch s_switch);
 bool equals_port(port p1, port p2);
 bool equals_switch(Switch s1, Switch s2);
 bool equals_station(Station s1, Station s2);

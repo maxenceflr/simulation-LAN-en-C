@@ -7,5 +7,8 @@ reseau : reseau.c reseau.h
 initReseau : initReseau.c filesystem.o
 	gcc -o initReseau.c filesystem.o ${FLAGS}
 
+graphe : graphe.c graphe.h
+	gcc -c graphe.c ${FLAGS}
+
 clean:
 	rm *.o
