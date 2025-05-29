@@ -52,8 +52,9 @@ void init_port(port* r_port, size_t numPort, size_t nbAdresses)
     r_port->tab_adresseMAC = malloc(TAILLE_ADRESSE_MAX * sizeof(adresseMAC));
 }
 
-void init_switch(Switch* r_switch, size_t nbPort, size_t numPriorite)
-{
+void init_switch(Switch* r_switch, size_t nbPort, size_t numPriorite, adresseMAC adrMac)
+{   
+    r_switch -> adrMac = adrMac;
     r_switch -> nb_ports = nbPort;
     r_switch -> priorite = numPriorite;
     r_switch -> tab_commutation = malloc(nbPort * sizeof(port));

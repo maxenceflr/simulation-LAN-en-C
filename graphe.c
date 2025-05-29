@@ -2,13 +2,13 @@
 #include "string.h"
 #include <stdio.h>
 
-void init_graphe(graphe *g, size_t nb_sommet)
+void init_graphe(graphe *g, size_t nb_sommet, size_t nbAretes)
 {
     g->ordre = nb_sommet;
     g->sommet_capacite = NOMBRE_SOMMETS_MAX;
     g->sommet = malloc(g->sommet_capacite * sizeof(sommet));
 
-    g->nb_aretes = 0;
+    g->nb_aretes = nbAretes;
     g->aretes_capacite = NOMBRE_ARETE_MAX;
     g->aretes = malloc(g->aretes_capacite * sizeof(arete));
 }
@@ -23,6 +23,36 @@ void deinit_graphe(graphe *g)
     g->sommet_capacite = 0;
     g->nb_aretes = 0;
     g->aretes_capacite = 0;
+}
+
+void init_sommet_station(sommet* s, adresseIP adrIP, adresseMAC adrMAC)
+{
+    s->type_equipement = TYPE_STATION;
+    init_station(&(s->station), adrIP, adrMAC);
+}
+
+void init_sommet_switch(sommet* s, adresseMAC adrMAC, size_t nbPort, size_t numPriorite, adresseMAC adrMac)
+{
+    s->type_equipement = TYPE_SWITCH;
+    init_switch(&(s->s_switch), nbPort, numPriorite, adrMAC);
+}
+
+void ajouter_sommet_switch(graphe *g, Switch sswitch)
+{
+    sommet s;
+    s.type_equipement = TYPE_SWITCH;
+    s.s_switch = sswitch;
+    g->sommet[g->ordre] = s;
+    g->ordre += 1;
+}
+
+void ajouter_sommet_station(graphe *g, Station station)
+{
+    sommet s;
+    s.type_equipement = TYPE_STATION;
+    s.station = station;
+    g->sommet[g->ordre] = s;
+    g->ordre += 1;   
 }
 
 size_t ordre(graphe const *g)
@@ -88,7 +118,7 @@ arete swap_sommets(arete a)
 
 bool equalsArete(arete a1, arete a2)
 {
-    return (equals_sommet(a1.s1, a2.s1) && equals_sommet(a1.s2, a2.s2)) || (equals_sommet(a1.s1, a2.s2) && equals_sommet(a1.s2, a2.s1));
+    return (equals_sommet(a1.s1, a2.s1) && equals_sommet(a1.s2, a2.s2)) || (equals_sommet(a1.s1, a2.s2) && equals_sommet(a1.s2, a2.s1)) && a1.poid == a2.poid;
 }
 
 // Une fonction locale "static arete swap_sommets(arete a)" pourra être utile
@@ -210,7 +240,7 @@ void afficher(graphe const *g)
         size_t sa[NOMBRE_SOMMETS_MAX];
         size_t nb_sommet_ajd = sommets_adjacents(g, g->sommet[index], sa);
 
-        printf("%lu (degré: %lu) <-> ", sommet, degre(g, sommet));
+        printf("%lu (degré: %lu) <-> ", index, degre(g, g->sommet[index]));
         afficher_tab(sa, nb_sommet_ajd);
         printf("\n");
     }
