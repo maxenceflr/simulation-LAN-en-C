@@ -1,18 +1,11 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <reseau.c>
-#include <string.h>
-#include <graphe.c>
-
-#define TAILLE_ADR_MAC_STRING 18
-#define TAILLE_ADR_IP_STRING 16
+#include "initReseau.h"
 
 void recuperer_nbEquipement_nbLien(const char *ligne, size_t* nb_equipement, size_t* nb_lien)
 {
     if (sscanf(ligne, "%lu %lu", nb_equipement, nb_lien) == 2)
     {
-        printf("Nombre d'équipements : %d\n", *nb_equipement);
-        printf("Nombre de liens : %d\n", *nb_lien);
+        printf("Nombre d'équipements : %lu\n", *nb_equipement);
+        printf("Nombre de liens : %lu\n", *nb_lien);
     } 
     else 
     {
@@ -73,7 +66,7 @@ void init_switch_from_text(Switch* s_switch, char* switch_str)
     char adr_mac_str[TAILLE_ADR_MAC_STRING];
     adresseMAC adr_MAC;
 
-    if(sscanf(switch_str, "%d;%[^;];%d;%d", &bin, adr_mac_str, &nb_port, &num_priorite) != 4)
+    if(sscanf(switch_str, "%lu;%[^;];%lu;%lu", &bin, adr_mac_str, &nb_port, &num_priorite) != 4)
     {
         fprintf(stderr, "Format de la ligne switch invalide : %s\n", switch_str);
         return;
@@ -85,13 +78,13 @@ void init_switch_from_text(Switch* s_switch, char* switch_str)
 
 void init_station_from_text(Station* station, char* station_str)
 {
-    size_t bin = 0;
+    int bin = 0;
     char adr_mac_str[TAILLE_ADR_MAC_STRING];
     char adr_ip_str[TAILLE_ADR_IP_STRING];
     adresseMAC adr_MAC;
     adresseIP adr_IP;
 
-    if(sscanf(station, "%d;%[^;];%[^\n]", &bin, adr_mac_str, adr_ip_str != 3))
+    if(sscanf(station_str, "%d;%[^;];%[^\n]", &bin, adr_mac_str, adr_ip_str) != 3)
     {
         fprintf(stderr, "Format de la ligne station invalide : %s\n", station_str);
         return;
@@ -99,13 +92,14 @@ void init_station_from_text(Station* station, char* station_str)
 
     init_adrMAC_from_text(&adr_MAC, adr_mac_str);
     init_adrIP_from_text(&adr_IP, adr_ip_str);
+    init_station(station, adr_IP, adr_MAC);
 }
 
 void init_arete_from_text(graphe* g, arete* a, char* arete_str)
 {
     size_t index_sommet_1, index_sommet_2, poids = 0;
 
-    if(sscanf(arete_str, "%d;%d;%d", &index_sommet_1, &index_sommet_2, &poids != 3))
+    if(sscanf(arete_str, "%lu;%lu;%lu", &index_sommet_1, &index_sommet_2, &poids) != 3)
     {
         fprintf(stderr, "Format de la ligne arete invalide : %s\n", arete_str);
         return;
@@ -113,7 +107,58 @@ void init_arete_from_text(graphe* g, arete* a, char* arete_str)
     
     a->s1 = g->sommet[index_sommet_1];
     a->s2 = g->sommet[index_sommet_2];
-    a->poid = poids;
+    a->poids = poids;
+}
+
+
+void init_graph_from_file(graphe* g, const char* path)
+{
+    FILE *f = fopen(path, "r");
+    if (f == NULL) {
+        perror("Erreur d'ouverture");
+        return ;
+    }
+
+    size_t nb_equipement, nb_lien, num_ligne, num_machine = 0;
+    char ligne[TAILLE_MAX_LIGNE];
+
+    while (fgets(ligne, sizeof(ligne), f) != NULL) 
+    {   
+        if(num_ligne == 0)
+        {
+            recuperer_nbEquipement_nbLien(ligne, &nb_equipement, &nb_lien);
+            init_graphe(g, nb_equipement, nb_lien);
+        }
+
+        else if (num_ligne > 0 && num_ligne <= nb_equipement)
+        {
+            if (ligne[0] == '1')
+            {   
+                Station machine;
+                init_station_from_text(&machine, ligne);
+                //inserer_sommet_station(g, machine, num_machine);
+                num_machine++;
+            }
+            else if (ligne[0] == '2')
+            {
+                Switch s_switch;
+                init_switch_from_text(&s_switch, ligne);
+                //inserer_sommet_switch(g, s_switch, num_machine);
+                num_machine++;
+            }
+        }
+        /*
+        else
+        {
+            arete a;
+            init_arete_from_text(g, &a, ligne);
+            ajouter_arete(g, a);
+        }
+        */
+        num_ligne++;
+    }
+
+    fclose(f);
 }
 
 /*

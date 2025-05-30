@@ -1,6 +1,12 @@
+#ifndef RESEAU_H
+#define RESEAU_H
+
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define TAILLE_MAC_OCTETS 6
 #define TAILLE_IP_OCTETS 4
@@ -8,14 +14,14 @@
 
 // Structure de donnée représentant une adresse MAC
 
-typedef struct {
+typedef struct adresseMAC{
     uint64_t entier;
     uint8_t bytes[TAILLE_MAC_OCTETS];
 } adresseMAC;
 
 // Structure de donnée représentant une adresse IP
 
-typedef struct {
+typedef struct adresseIP{
     uint32_t entier;
     uint8_t bytes[TAILLE_IP_OCTETS];
 } adresseIP;
@@ -51,6 +57,8 @@ typedef struct Switch
 
 void afficherIP(adresseIP adresse);
 void afficherMAC(adresseMAC adresse);
+void afficherSwitch(adresseMAC adresse);
+void afficherStation(adresseMAC adresse);
 void afficherTableCommutation(Switch sswitch);
 
 // Fonctions d'initialisation 
@@ -58,6 +66,8 @@ void afficherTableCommutation(Switch sswitch);
 void init_station(Station* station, adresseIP adrIP, adresseMAC adrMAC);
 void init_port(port* r_port, size_t num_port, size_t nbAdresses);
 void init_switch(Switch* r_switch, size_t nbPort, size_t numPriorite, adresseMAC adrMac);
+void deinit_switch(Switch* r_switch);
+void deinit_port(port* r_port);
 
 // Fonctions utilitaires
 
@@ -65,3 +75,5 @@ void ajouter_adresse_port(port* port, adresseMAC adrMAC);
 bool equals_port(port p1, port p2);
 bool equals_switch(Switch s1, Switch s2);
 bool equals_station(Station s1, Station s2);
+
+#endif
