@@ -1,94 +1,62 @@
 #include "graphe.h"
 
-void init_graphe(graphe *g, size_t nb_sommet, size_t nbAretes)
+void init_graphe(graphe *g)
 {
-    g->ordre = nb_sommet;
+    g->ordre = 0;
     g->sommet_capacite = NOMBRE_SOMMETS_MAX;
-    g->sommet = (sommet *) malloc(g->sommet_capacite * sizeof(sommet));
+    g->sommet = (sommet *)malloc(g->sommet_capacite * sizeof(sommet));
 
-    g->nb_aretes = nbAretes;
+    g->nb_aretes = 0;
     g->aretes_capacite = NOMBRE_ARETE_MAX;
-    g->aretes = (arete *) malloc(g->aretes_capacite * sizeof(arete));
+    g->aretes = (arete *)malloc(g->aretes_capacite * sizeof(arete));
 }
 
 void deinit_graphe(graphe *g)
 {
-    free(g->aretes);
-
-    for (size_t index = 0; index < g->ordre; index ++)
+    for (size_t index = 0; index < g->ordre; index++)
     {
-        if(g->sommet[index].type_equipement == TYPE_SWITCH)
+        if (g->sommet[index].type_equipement == TYPE_SWITCH)
         {
             deinit_switch(&g->sommet[index].s_switch);
         }
     }
 
-    free(g->sommet);
-
-    g->aretes = NULL;
     g->ordre = 0;
     g->sommet_capacite = 0;
     g->nb_aretes = 0;
     g->aretes_capacite = 0;
-}
 
-void init_sommet_station(sommet* s, adresseIP adrIP, adresseMAC adrMAC)
-{
-    s->type_equipement = TYPE_STATION;
-    init_station(&(s->station), adrIP, adrMAC);
-}
+    free(g->aretes);
+    free(g->sommet);
 
-void init_sommet_switch(sommet* s, size_t nbPort, size_t numPriorite, adresseMAC adrMac)
-{
-    s->type_equipement = TYPE_SWITCH;
-    init_switch(&(s->s_switch), nbPort, numPriorite, adrMac);
+    g->aretes = NULL;
+    g->sommet = NULL;
 }
 
 void ajouter_sommet_switch(graphe *g, Switch sswitch)
 {
-    sommet s;
-    s.type_equipement = TYPE_SWITCH;
-    s.s_switch = sswitch;
-    g->sommet[g->ordre] = s;
-}
+    if (g->ordre >= g->sommet_capacite)
+    {
+        fprintf(stderr, "Erreur: capacité max de sommets atteinte\n");
+        exit(EXIT_FAILURE);
+    }
 
-void inserer_sommet_station(graphe *g, Station station, size_t index)
-{
-    if (index < g->ordre)
-    {
-        sommet s;
-        s.type_equipement = TYPE_STATION;
-        s.station = station;
-        g->sommet[index] = s;
-    }
-    else
-    {
-        fprintf(stderr, "Indice trop grand\n");
-    }
-}
-
-void inserer_sommet_switch(graphe *g, Switch s_switch, size_t index)
-{
-    if (index < g->ordre)
-    {
-        sommet s;
-        s.type_equipement = TYPE_SWITCH;
-        s.s_switch = s_switch;
-        g->sommet[index] = s;
-    }
-    else
-    {
-        fprintf(stderr, "Indice trop grand\n");
-    }
+    g->sommet[g->ordre].type_equipement = TYPE_SWITCH;
+    g->sommet[g->ordre].s_switch = sswitch;
+    g->ordre += 1;
 }
 
 void ajouter_sommet_station(graphe *g, Station station)
 {
-    sommet s;
-    s.type_equipement = TYPE_STATION;
-    s.station = station;
-    g->sommet[g->ordre] = s;
-    g->ordre += 1;   
+    if (g->ordre >= g->sommet_capacite)
+    {
+        fprintf(stderr, "Erreur: capacité max de sommets atteinte\n");
+        exit(EXIT_FAILURE);
+    }
+
+    g->sommet[g->ordre].type_equipement = TYPE_STATION;
+    g->sommet[g->ordre].station = station;
+    g->ordre += 1;
 }
 
 size_t ordre(graphe const *g)
@@ -111,7 +79,7 @@ size_t index_sommet(graphe const *g, sommet s)
 {
     for (size_t index = 0; index < g->ordre; index++)
     {
-        if(equals_sommet(g->sommet[index], s))
+        if (equals_sommet(g->sommet[index], s))
         {
             return index;
         }
@@ -133,20 +101,18 @@ bool equals_sommet(sommet s1, sommet s2)
             return equals_switch(s1.s_switch, s2.s_switch);
         }
     }
-    else 
+    else
     {
         return false;
     }
 }
-
-
 
 // Une fonction locale "static arete swap_sommets(arete a)" pourra être utile
 // cette fonction retourne une nouvelle arête dont les sommets sont les même que l'arête reçue mais inversés
 
 arete swap_sommets(arete a)
 {
-    return (arete){a.s2,a.s1, a.poids};
+    return (arete){a.s2, a.s1, a.poids};
 }
 
 // Une fonction locale pour comparer si 2 arêtes sont égales.
@@ -162,17 +128,13 @@ bool equalsArete(arete a1, arete a2)
 
 bool existe_arete(graphe const *g, arete a)
 {
-    // retourne true si l'arête a est contenue dans le graphe g, false sinon
-    // /!\ l'arête (s1,s2) et l'arête (s2,s1) sont considérées équivalentes
-
-    size_t taille = sizeof(g->nb_aretes);
-
-    for (size_t i = 0; i < taille; ++i) {
-        if(equalsArete(g->aretes[i], a)){
+    for (size_t i = 0; i < g->nb_aretes; ++i)
+    {
+        if (equalsArete(g->aretes[i], a))
+        {
             return true;
         }
     }
-
     return false;
 }
 
@@ -183,21 +145,21 @@ bool ajouter_arete(graphe *g, arete a)
     //  - les sommets s1 et s2 de a sont distincts
     //  - l'arête a n'existe pas dans g
 
-    if( !equals_sommet(a.s1, a.s2) && (index_sommet(g, a.s1) != UNKNOWN_INDEX && index_sommet(g, a.s2) != UNKNOWN_INDEX) && !existe_arete(g, a) )
+    if (!equals_sommet(a.s1, a.s2) && (index_sommet(g, a.s1) != UNKNOWN_INDEX && index_sommet(g, a.s2) != UNKNOWN_INDEX) && !existe_arete(g, a))
     {
         if (g->nb_aretes == g->aretes_capacite)
         {
             size_t ancienne_capacite = g->aretes_capacite;
             g->aretes_capacite *= 2;
-            
-            arete* new_tab = (arete *)malloc(g->aretes_capacite * sizeof(arete));
+
+            arete *new_tab = (arete *)malloc(g->aretes_capacite * sizeof(arete));
             memcpy(new_tab, g->aretes, ancienne_capacite * sizeof(arete));
 
             free(g->aretes);
 
             g->aretes = new_tab;
         }
-    
+
         g->aretes[g->nb_aretes] = a;
         g->nb_aretes += 1;
 
@@ -235,17 +197,17 @@ size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[])
 
     int nb_sommets_stockes = 0;
 
-    for(size_t i = 0; i < g->nb_aretes; i++)
+    for (size_t i = 0; i < g->nb_aretes; i++)
     {
         if (equals_sommet(g->aretes[i].s1, s))
         {
             sa[nb_sommets_stockes] = g->aretes[i].s2;
-            nb_sommets_stockes ++;
+            nb_sommets_stockes++;
         }
         else if (equals_sommet(g->aretes[i].s2, s))
         {
             sa[nb_sommets_stockes] = g->aretes[i].s1;
-            nb_sommets_stockes ++;
+            nb_sommets_stockes++;
         }
     }
 
@@ -260,9 +222,9 @@ void afficher_tab(size_t tab[], size_t taille)
     }
 }
 
-char* afficher_sommet(sommet s)
+char *afficher_sommet(sommet s)
 {
-    if(s.type_equipement == TYPE_STATION)
+    if (s.type_equipement == TYPE_STATION)
     {
         return "STA";
     }
@@ -281,22 +243,25 @@ void afficher_arete(arete a)
 void afficher_graphe(graphe const *g)
 {
     printf("# Nombre d'équipements : %lu\n", g->ordre);
-    printf("# Nombre de liens : %lu\n", g->nb_aretes);
-    printf("--EQUIPEMENTS--\n");
+    printf("# Nombre de liens : %lu\n\n", g->nb_aretes);
+    printf("--EQUIPEMENTS--\n\n");
 
     for (size_t index = 0; index < g->ordre; index++)
-    {   
+    {
         sommet sa[NOMBRE_SOMMETS_MAX];
         size_t nb_sommet_ajd = sommets_adjacents(g, g->sommet[index], sa);
 
-        printf("%s (degré: %lu) <-> ", afficher_sommet(g->sommet[index]), nb_sommet_ajd);
-        printf("\n");
+        printf("%s %lu (degré: %lu)\n", afficher_sommet(g->sommet[index]), index, nb_sommet_ajd);
     }
 
-    printf("--LIENS--\n");
+    printf("\n");
+
+    printf("--LIENS--\n\n");
 
     for (size_t i = 0; i < g->nb_aretes; i++)
-    {   
+    {
         afficher_arete(g->aretes[i]);
     }
+
+    printf("\n");
 }

@@ -7,9 +7,9 @@ void afficherIP(adresseIP adresse)
 
 void afficherMAC(adresseMAC adresse)
 {
-    for(int i = 0; i < TAILLE_MAC_OCTETS; i++)
+    for (int i = 0; i < TAILLE_MAC_OCTETS; i++)
     {
-        if (i == TAILLE_MAC_OCTETS -1)
+        if (i == TAILLE_MAC_OCTETS - 1)
         {
             printf("%02x", adresse.bytes[i]);
         }
@@ -22,12 +22,12 @@ void afficherMAC(adresseMAC adresse)
 
 void afficherTableCommutation(Switch r_switch)
 {
-    for(size_t i = 0; i < r_switch.nb_ports; i++)
+    for (size_t i = 0; i < r_switch.nb_ports; i++)
     {
         printf("Port %lu:\t", i);
-        size_t nb_adresseMac = r_switch.tab_commutation[i].nb_adressesMAC; 
+        size_t nb_adresseMac = r_switch.tab_commutation[i].nb_adressesMAC;
 
-        for(size_t j = 0; j < nb_adresseMac; j++)
+        for (size_t j = 0; j < nb_adresseMac; j++)
         {
             afficherMAC(r_switch.tab_commutation[i].tab_adresseMAC[j]);
             printf("\n        \t");
@@ -37,43 +37,42 @@ void afficherTableCommutation(Switch r_switch)
     }
 }
 
-
-void init_station(Station* station, adresseIP adrIP, adresseMAC adrMAC)
+void init_station(Station *station, adresseIP adrIP, adresseMAC adrMAC)
 {
-    
+
     memcpy(&(station->adrIP), &adrIP, TAILLE_IP_OCTETS);
     memcpy(&(station->adrMAC), &adrMAC, TAILLE_MAC_OCTETS);
 }
 
-void init_port(port* r_port, size_t numPort, size_t nbAdresses)
+void init_port(port *r_port)
 {
-    r_port->num_port = numPort;
-    r_port->nb_adressesMAC = nbAdresses;
+    r_port->nb_adressesMAC = 0;
     r_port->tab_adresseMAC = (adresseMAC *)malloc(TAILLE_ADRESSE_MAX * sizeof(adresseMAC));
 }
 
-void deinit_port(port* r_port)
+void deinit_port(port *r_port)
 {
-    free(r_port ->tab_adresseMAC);
-    r_port ->tab_adresseMAC = NULL;
+    r_port->nb_adressesMAC = 0;
+    free(r_port->tab_adresseMAC);
+    r_port->tab_adresseMAC = NULL;
 }
 
-void init_switch(Switch* r_switch, size_t nbPort, size_t numPriorite, adresseMAC adrMac)
-{   
-    r_switch -> adrMac = adrMac;
-    r_switch -> nb_ports = nbPort;
-    r_switch -> priorite = numPriorite;
-    r_switch -> tab_commutation = (port *)malloc(nbPort * sizeof(port));
+void init_switch(Switch *r_switch, size_t nbPort, size_t numPriorite, adresseMAC adrMac)
+{
+    r_switch->adrMac = adrMac;
+    r_switch->nb_ports = nbPort;
+    r_switch->priorite = numPriorite;
+    r_switch->tab_commutation = (port *)malloc(nbPort * sizeof(port));
 
-    for(size_t i = 0; i < nbPort; i++)
+    for (size_t i = 0; i < nbPort; i++)
     {
-        init_port(&(r_switch->tab_commutation)[i], i, 1);
+        init_port(&(r_switch->tab_commutation)[i]);
     }
 }
 
-void deinit_switch(Switch* r_switch)
-{   
-    for(size_t i = 0; i < r_switch->nb_ports; i++)
+void deinit_switch(Switch *r_switch)
+{
+    for (size_t i = 0; i < r_switch->nb_ports; i++)
     {
         deinit_port(&(r_switch->tab_commutation)[i]);
     }
@@ -82,20 +81,21 @@ void deinit_switch(Switch* r_switch)
     r_switch = NULL;
 }
 
-void ajouter_adresse_port(port* port, adresseMAC adrMAC)
-{   
+void ajouter_adresse_port(port *port, adresseMAC adrMAC)
+{
     port->tab_adresseMAC[port->nb_adressesMAC] = adrMAC;
+    port->nb_adressesMAC++;
 }
 
 bool equals_port(port p1, port p2)
 {
-    bool first_step = p1.num_port == p2.num_port && p1.nb_adressesMAC == p2.nb_adressesMAC;
+    bool first_step = p1.nb_adressesMAC == p2.nb_adressesMAC;
 
     if (first_step)
     {
         for (size_t i = 0; i < p1.nb_adressesMAC; i++)
         {
-            if(p1.tab_adresseMAC[i].entier != p2.tab_adresseMAC[i].entier)
+            if (p1.tab_adresseMAC[i].entier != p2.tab_adresseMAC[i].entier)
             {
                 return false;
             }
@@ -110,7 +110,7 @@ bool equals_port(port p1, port p2)
 
 bool equals_station(Station s1, Station s2)
 {
-    return s1.adrIP.entier == s2.adrIP.entier && s1.adrMAC.entier == s2.adrMAC.entier; 
+    return s1.adrIP.entier == s2.adrIP.entier && s1.adrMAC.entier == s2.adrMAC.entier;
 }
 
 bool equals_switch(Switch s1, Switch s2)
