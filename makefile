@@ -1,14 +1,36 @@
-FLAGS=-Wall -Wextra -Werror -Wno-unused-parameter -pedantic
-all : main
+# filepath: /home/maxime/BUT_S2/S21/SAES21/Makefile
 
-reseau : reseau.c reseau.h
-	gcc -c reseau.c ${FLAGS}
+# Compiler
+CC = gcc
 
-initReseau : initReseau.c initReseau.h
-	gcc -o initReseau.c ${FLAGS}
+# Compiler flags
+CFLAGS = -Wall -Wextra -Werror -Wno-unused-parameter -pedantic
 
-graphe : graphe.c graphe.h
-	gcc -c graphe.c ${FLAGS}
+# Source files
+SRCS = main.c graphe.c reseau.c initReseau.c
 
+# Header files
+HEADERS = graphe.h reseau.h initReseau.h
+
+# Object files
+OBJS = $(SRCS:.c=.o)
+
+# Executable name
+EXEC = main
+
+# Default target
+all: $(EXEC)
+
+# Link the object files to create the executable
+$(EXEC): $(OBJS)
+	$(CC) -o $@ $^
+
+# Compile source files into object files
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean up object files and the executable
 clean:
-	rm *.o
+	rm -f $(OBJS) $(EXEC)
+
+.PHONY: all clean

@@ -9,42 +9,44 @@
 
 static const size_t UNKNOWN_INDEX = -1;
 
-typedef enum {
+typedef enum
+{
     TYPE_SWITCH,
     TYPE_STATION,
 } TypeTag;
 
-typedef union sommet
-{   
+typedef struct sommet
+{
     TypeTag type_equipement;
-    Station station;
-    Switch  s_switch;
+    union
+    {
+        Station station;
+        Switch s_switch;
+    };
 } sommet;
 
 typedef struct arete
 {
     sommet s1;
     sommet s2;
-    size_t poids;   
+    size_t poids;
 } arete;
 
 typedef struct graphe
 {
     size_t ordre;
     size_t sommet_capacite;
-    sommet* sommet;
-    arete* aretes; 
+    sommet *sommet;
+    arete *aretes;
     size_t aretes_capacite;
     size_t nb_aretes;
 
-    
 } graphe;
 
-
-void init_graphe(graphe *g, size_t nb_sommet, size_t nbAretes);
+void init_graphe(graphe *g);
 void deinit_graphe(graphe *g);
-void init_sommet_station(sommet* s, adresseIP adrIP, adresseMAC adrMAC);
-void init_sommet_switch(sommet* s, size_t nbPort, size_t numPriorite, adresseMAC adrMac);
+void init_sommet_station(sommet *s, adresseIP adrIP, adresseMAC adrMAC);
+void init_sommet_switch(sommet *s, size_t nbPort, size_t numPriorite, adresseMAC adrMac);
 
 size_t ordre(graphe const *g);
 size_t nb_aretes(graphe const *g);
