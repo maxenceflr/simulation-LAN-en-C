@@ -20,6 +20,25 @@ void afficherMAC(adresseMAC adresse)
     }
 }
 
+void afficherSwitch(Switch sswitch)
+{
+    printf("Switch SW%lu", sswitch.id);
+    printf("\n\t- Adresse MAC: ");
+    afficherMAC(sswitch.adrMac);
+    printf("\n\t- Nombre de ports: %lu", sswitch.nb_ports);
+    printf("\n\t- Priorité: %lu\n", sswitch.priorite);
+}
+
+void afficherStation(Station station)
+{
+    printf("Station ST%lu", station.id);
+    printf("\n\t- Adresse MAC: ");
+    afficherMAC(station.adrMAC);
+    printf("\n\t- Adresse IP:  ");
+    afficherIP(station.adrIP);
+    printf("\n");
+}
+
 void afficherTableCommutation(Switch r_switch)
 {
     for (size_t i = 0; i < r_switch.nb_ports; i++)
@@ -39,26 +58,14 @@ void afficherTableCommutation(Switch r_switch)
 
 void init_station(Station *station, adresseIP adrIP, adresseMAC adrMAC)
 {
-
-    memcpy(&(station->adrIP), &adrIP, TAILLE_IP_OCTETS);
-    memcpy(&(station->adrMAC), &adrMAC, TAILLE_MAC_OCTETS);
-}
-
-void init_port(port *r_port)
-{
-    r_port->nb_adressesMAC = 0;
-    r_port->tab_adresseMAC = (adresseMAC *)malloc(TAILLE_ADRESSE_MAX * sizeof(adresseMAC));
-}
-
-void deinit_port(port *r_port)
-{
-    r_port->nb_adressesMAC = 0;
-    free(r_port->tab_adresseMAC);
-    r_port->tab_adresseMAC = NULL;
+    station->id = 0;
+    station->adrIP = adrIP;
+    station->adrMAC = adrMAC;
 }
 
 void init_switch(Switch *r_switch, size_t nbPort, size_t numPriorite, adresseMAC adrMac)
 {
+    r_switch->id = 0;
     r_switch->adrMac = adrMac;
     r_switch->nb_ports = nbPort;
     r_switch->priorite = numPriorite;
@@ -72,6 +79,18 @@ void init_switch(Switch *r_switch, size_t nbPort, size_t numPriorite, adresseMAC
 
 void deinit_switch(Switch *r_switch)
 {
+    r_switch->nb_ports = 0;
+    r_switch->priorite = 0;
+    r_switch->adrMac.entier = 0;
+    r_switch->id = 0;
+
+    r_switch->adrMac.bytes[0] = 0;
+    r_switch->adrMac.bytes[1] = 0;
+    r_switch->adrMac.bytes[2] = 0;
+    r_switch->adrMac.bytes[3] = 0;
+    r_switch->adrMac.bytes[4] = 0;
+    r_switch->adrMac.bytes[5] = 0;
+
     for (size_t i = 0; i < r_switch->nb_ports; i++)
     {
         deinit_port(&(r_switch->tab_commutation)[i]);
@@ -81,8 +100,29 @@ void deinit_switch(Switch *r_switch)
     r_switch = NULL;
 }
 
+void init_port(port *r_port)
+{
+    r_port->nb_adressesMAC = 0;
+    r_port->adresses_capacite = TAILLE_ADRESSE_MAX;
+    r_port->tab_adresseMAC = (adresseMAC *)malloc(TAILLE_ADRESSE_MAX * sizeof(adresseMAC));
+}
+
+void deinit_port(port *r_port)
+{
+    r_port->nb_adressesMAC = 0;
+    r_port->adresses_capacite = 0;
+    free(r_port->tab_adresseMAC);
+    r_port->tab_adresseMAC = NULL;
+}
+
 void ajouter_adresse_port(port *port, adresseMAC adrMAC)
 {
+    if (port->nb_adressesMAC >= port->adresses_capacite)
+    {
+        fprintf(stderr, "Erreur: capacité maximale d'adresses MAC atteinte pour ce port.\n");
+        exit(EXIT_FAILURE);
+    }
+
     port->tab_adresseMAC[port->nb_adressesMAC] = adrMAC;
     port->nb_adressesMAC++;
 }

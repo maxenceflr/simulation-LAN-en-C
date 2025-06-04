@@ -34,9 +34,13 @@ typedef struct arete
 
 typedef struct graphe
 {
+    size_t nb_switch;
+    size_t nb_station;
+
     size_t ordre;
     size_t sommet_capacite;
     sommet *sommet;
+
     arete *aretes;
     size_t aretes_capacite;
     size_t nb_aretes;
@@ -45,20 +49,15 @@ typedef struct graphe
 
 void init_graphe(graphe *g);
 void deinit_graphe(graphe *g);
-void init_sommet_station(sommet *s, adresseIP adrIP, adresseMAC adrMAC);
-void init_sommet_switch(sommet *s, size_t nbPort, size_t numPriorite, adresseMAC adrMac);
 
 size_t ordre(graphe const *g);
 size_t nb_aretes(graphe const *g);
 
 void ajouter_sommet_station(graphe *g, Station station);
 void ajouter_sommet_switch(graphe *g, Switch s_switch);
-
-void inserer_sommet_station(graphe *g, Station station, size_t index);
-void inserer_sommet_switch(graphe *g, Switch s_switch, size_t index);
-
 void ajouter_sommet(graphe *g, sommet s_sommet);
 size_t index_sommet(graphe const *g, sommet s);
+size_t index_equipement(graphe const *g, sommet s);
 bool existe_arete(graphe const *g, arete a);
 bool ajouter_arete(graphe *g, arete a);
 bool equals_sommet(sommet s1, sommet s2);
@@ -66,4 +65,5 @@ size_t index_arete(graphe const *g, arete a);
 
 size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[]);
 void afficher_graphe(graphe const *g);
+
 #endif

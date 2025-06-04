@@ -2,6 +2,9 @@
 
 void init_graphe(graphe *g)
 {
+    g->nb_switch = 0;
+    g->nb_station = 0;
+
     g->ordre = 0;
     g->sommet_capacite = NOMBRE_SOMMETS_MAX;
     g->sommet = (sommet *)malloc(g->sommet_capacite * sizeof(sommet));
@@ -25,6 +28,8 @@ void deinit_graphe(graphe *g)
     g->sommet_capacite = 0;
     g->nb_aretes = 0;
     g->aretes_capacite = 0;
+    g->nb_switch = 0;
+    g->nb_station = 0;
 
     free(g->aretes);
     free(g->sommet);
@@ -41,8 +46,11 @@ void ajouter_sommet_switch(graphe *g, Switch sswitch)
         exit(EXIT_FAILURE);
     }
 
+    sswitch.id = g->nb_switch + 1;
+
     g->sommet[g->ordre].type_equipement = TYPE_SWITCH;
     g->sommet[g->ordre].s_switch = sswitch;
+    g->nb_switch += 1;
     g->ordre += 1;
 }
 
@@ -54,8 +62,11 @@ void ajouter_sommet_station(graphe *g, Station station)
         exit(EXIT_FAILURE);
     }
 
+    station.id = g->nb_station + 1;
+
     g->sommet[g->ordre].type_equipement = TYPE_STATION;
     g->sommet[g->ordre].station = station;
+    g->nb_station += 1;
     g->ordre += 1;
 }
 
@@ -71,7 +82,23 @@ size_t nb_aretes(graphe const *g)
 
 void ajouter_sommet(graphe *g, sommet s_sommet)
 {
+    if (g->ordre >= g->sommet_capacite)
+    {
+        fprintf(stderr, "Erreur: capacité max de sommets atteinte\n");
+        exit(EXIT_FAILURE);
+    }
+
     g->sommet[g->ordre] = s_sommet;
+
+    if (s_sommet.type_equipement == TYPE_STATION)
+    {
+        g->nb_station += 1;
+    }
+    else
+    {
+        g->nb_switch += 1;
+    }
+
     g->ordre += 1;
 }
 
@@ -222,22 +249,26 @@ void afficher_tab(size_t tab[], size_t taille)
     }
 }
 
-char *afficher_sommet(sommet s)
+void afficher_sommet(sommet s)
 {
     if (s.type_equipement == TYPE_STATION)
     {
-        return "STA";
+        printf("STA%lu", s.station.id);
     }
 
     else
     {
-        return "SW";
+        printf("SW%lu", s.s_switch.id);
     }
 }
 
 void afficher_arete(arete a)
 {
-    printf("(%s - %s, %lu)\n", afficher_sommet(a.s1), afficher_sommet(a.s2), a.poids);
+    printf("(");
+    afficher_sommet(a.s1);
+    printf(", ");
+    afficher_sommet(a.s2);
+    printf(") - Poids: %lu\n", a.poids);
 }
 
 void afficher_graphe(graphe const *g)
@@ -248,10 +279,14 @@ void afficher_graphe(graphe const *g)
 
     for (size_t index = 0; index < g->ordre; index++)
     {
-        sommet sa[NOMBRE_SOMMETS_MAX];
-        size_t nb_sommet_ajd = sommets_adjacents(g, g->sommet[index], sa);
-
-        printf("%s %lu (degré: %lu)\n", afficher_sommet(g->sommet[index]), index, nb_sommet_ajd);
+        if (g->sommet[index].type_equipement == TYPE_STATION)
+        {
+            afficherStation(g->sommet[index].station);
+        }
+        else
+        {
+            afficherSwitch(g->sommet[index].s_switch);
+        }
     }
 
     printf("\n");
