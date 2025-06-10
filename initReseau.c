@@ -1,5 +1,11 @@
 #include "initReseau.h"
 
+/**
+ * @brief Récupère le nombre d'équipements et de liens à partir d'une ligne de texte.
+ * @param ligne Ligne de texte à analyser.
+ * @param nb_equipement Pointeur vers la variable de nombre d'équipements.
+ * @param nb_lien Pointeur vers la variable de nombre de liens.
+ */
 void recuperer_nbEquipement_nbLien(const char *ligne, size_t *nb_equipement, size_t *nb_lien)
 {
     if (sscanf(ligne, "%lu %lu", nb_equipement, nb_lien) == 2)
@@ -12,6 +18,11 @@ void recuperer_nbEquipement_nbLien(const char *ligne, size_t *nb_equipement, siz
     }
 }
 
+/**
+ * @brief Initialise une adresse IP à partir d'une chaîne de caractères.
+ * @param adrIP Pointeur vers l'adresse IP à initialiser.
+ * @param ip_str Chaîne de caractères représentant l'adresse IP.
+ */
 void init_adrIP_from_text(adresseIP *adrIP, const char *ip_str)
 {
     uint32_t a, b, c, d;
@@ -36,6 +47,11 @@ void init_adrIP_from_text(adresseIP *adrIP, const char *ip_str)
     adrIP->entier = (a << 24) | (b << 16) | (c << 8) | d;
 }
 
+/**
+ * @brief Initialise une adresse MAC à partir d'une chaîne de caractères.
+ * @param adrMAC Pointeur vers l'adresse MAC à initialiser.
+ * @param mac_str Chaîne de caractères représentant l'adresse MAC.
+ */
 void init_adrMAC_from_text(adresseMAC *adrMAC, const char *mac_str)
 {
     unsigned int values[TAILLE_MAC_OCTETS];
@@ -59,6 +75,11 @@ void init_adrMAC_from_text(adresseMAC *adrMAC, const char *mac_str)
     }
 }
 
+/**
+ * @brief Initialise un switch à partir d'une ligne de texte.
+ * @param s_switch Pointeur vers le switch à initialiser.
+ * @param switch_str Ligne de texte décrivant le switch.
+ */
 void init_switch_from_text(Switch *s_switch, char *switch_str)
 {
     size_t bin = 0, nb_port = 0, num_priorite = 0;
@@ -75,6 +96,11 @@ void init_switch_from_text(Switch *s_switch, char *switch_str)
     init_switch(s_switch, nb_port, num_priorite, adr_MAC);
 }
 
+/**
+ * @brief Initialise une station à partir d'une ligne de texte.
+ * @param station Pointeur vers la station à initialiser.
+ * @param station_str Ligne de texte décrivant la station.
+ */
 void init_station_from_text(Station *station, char *station_str)
 {
     int bin = 0;
@@ -94,6 +120,12 @@ void init_station_from_text(Station *station, char *station_str)
     init_station(station, adr_IP, adr_MAC);
 }
 
+/**
+ * @brief Initialise une arête à partir d'une ligne de texte.
+ * @param g Pointeur vers le graphe.
+ * @param a Pointeur vers l'arête à initialiser.
+ * @param arete_str Ligne de texte décrivant l'arête.
+ */
 void init_arete_from_text(graphe *g, arete *a, char *arete_str)
 {
     size_t index_sommet_1, index_sommet_2, poids = 0;
@@ -109,6 +141,11 @@ void init_arete_from_text(graphe *g, arete *a, char *arete_str)
     a->poids = poids;
 }
 
+/**
+ * @brief Initialise un graphe à partir d'un fichier texte.
+ * @param g Pointeur vers le graphe à initialiser.
+ * @param path Chemin du fichier à lire.
+ */
 void init_graph_from_file(graphe *g, const char *path)
 {
     FILE *f = fopen(path, "r");
