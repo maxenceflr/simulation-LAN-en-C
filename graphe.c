@@ -1,5 +1,9 @@
 #include "graphe.h"
 
+/**
+ * @brief Initialise la structure d'un graphe.
+ * @param g Pointeur vers le graphe à initialiser.
+ */
 void init_graphe(graphe *g)
 {
     g->nb_switch = 0;
@@ -14,6 +18,10 @@ void init_graphe(graphe *g)
     g->aretes = (arete *)malloc(g->aretes_capacite * sizeof(arete));
 }
 
+/**
+ * @brief Libère la mémoire d'un graphe et de ses sommets.
+ * @param g Pointeur vers le graphe à désinitialiser.
+ */
 void deinit_graphe(graphe *g)
 {
     for (size_t index = 0; index < g->ordre; index++)
@@ -38,6 +46,11 @@ void deinit_graphe(graphe *g)
     g->sommet = NULL;
 }
 
+/**
+ * @brief Ajoute un sommet de type switch au graphe.
+ * @param g Pointeur vers le graphe.
+ * @param sswitch Switch à ajouter.
+ */
 void ajouter_sommet_switch(graphe *g, Switch sswitch)
 {
     if (g->ordre >= g->sommet_capacite)
@@ -54,6 +67,11 @@ void ajouter_sommet_switch(graphe *g, Switch sswitch)
     g->ordre += 1;
 }
 
+/**
+ * @brief Ajoute un sommet de type station au graphe.
+ * @param g Pointeur vers le graphe.
+ * @param station Station à ajouter.
+ */
 void ajouter_sommet_station(graphe *g, Station station)
 {
     if (g->ordre >= g->sommet_capacite)
@@ -70,16 +88,31 @@ void ajouter_sommet_station(graphe *g, Station station)
     g->ordre += 1;
 }
 
+/**
+ * @brief Retourne le nombre de sommets du graphe.
+ * @param g Pointeur constant vers le graphe.
+ * @return Nombre de sommets.
+ */
 size_t ordre(graphe const *g)
 {
     return g->ordre;
 }
 
+/**
+ * @brief Retourne le nombre d'arêtes du graphe.
+ * @param g Pointeur constant vers le graphe.
+ * @return Nombre d'arêtes.
+ */
 size_t nb_aretes(graphe const *g)
 {
     return g->nb_aretes;
 }
 
+/**
+ * @brief Ajoute un sommet générique au graphe.
+ * @param g Pointeur vers le graphe.
+ * @param s_sommet Sommet à ajouter.
+ */
 void ajouter_sommet(graphe *g, sommet s_sommet)
 {
     if (g->ordre >= g->sommet_capacite)
@@ -102,6 +135,12 @@ void ajouter_sommet(graphe *g, sommet s_sommet)
     g->ordre += 1;
 }
 
+/**
+ * @brief Retourne l'index d'un sommet dans le graphe, ou UNKNOWN_INDEX s'il n'existe pas.
+ * @param g Pointeur constant vers le graphe.
+ * @param s Sommet à rechercher.
+ * @return Index du sommet ou UNKNOWN_INDEX.
+ */
 size_t index_sommet(graphe const *g, sommet s)
 {
     for (size_t index = 0; index < g->ordre; index++)
@@ -115,6 +154,12 @@ size_t index_sommet(graphe const *g, sommet s)
     return UNKNOWN_INDEX;
 }
 
+/**
+ * @brief Compare deux sommets pour vérifier s'ils sont identiques.
+ * @param s1 Premier sommet.
+ * @param s2 Deuxième sommet.
+ * @return true si les sommets sont identiques, false sinon.
+ */
 bool equals_sommet(sommet s1, sommet s2)
 {
     if (s1.type_equipement == s2.type_equipement)
@@ -134,25 +179,33 @@ bool equals_sommet(sommet s1, sommet s2)
     }
 }
 
-// Une fonction locale "static arete swap_sommets(arete a)" pourra être utile
-// cette fonction retourne une nouvelle arête dont les sommets sont les même que l'arête reçue mais inversés
-
+/**
+ * @brief Inverse les sommets d'une arête.
+ * @param a Arête à inverser.
+ * @return Nouvelle arête avec les sommets inversés.
+ */
 arete swap_sommets(arete a)
 {
     return (arete){a.s2, a.s1, a.poids};
 }
 
-// Une fonction locale pour comparer si 2 arêtes sont égales.
-// Elle retourne true si a1 = a2 et false sinon
-
+/**
+ * @brief Compare deux arêtes pour vérifier si elles sont identiques.
+ * @param a1 Première arête.
+ * @param a2 Deuxième arête.
+ * @return true si les arêtes sont identiques, false sinon.
+ */
 bool equalsArete(arete a1, arete a2)
 {
     return ((equals_sommet(a1.s1, a2.s1) && equals_sommet(a1.s2, a2.s2)) || (equals_sommet(a1.s1, a2.s2) && equals_sommet(a1.s2, a2.s1))) && (a1.poids == a2.poids);
 }
 
-// Une fonction locale "static arete swap_sommets(arete a)" pourra être utile
-// cette fonction retourne une nouvelle arête dont les sommets sont les même que l'arête reçue mais inversés
-
+/**
+ * @brief Vérifie si une arête existe déjà dans le graphe.
+ * @param g Pointeur constant vers le graphe.
+ * @param a Arête à rechercher.
+ * @return true si l'arête existe, false sinon.
+ */
 bool existe_arete(graphe const *g, arete a)
 {
     for (size_t i = 0; i < g->nb_aretes; ++i)
@@ -165,6 +218,12 @@ bool existe_arete(graphe const *g, arete a)
     return false;
 }
 
+/**
+ * @brief Ajoute une arête au graphe si elle est valide et n'existe pas déjà.
+ * @param g Pointeur vers le graphe.
+ * @param a Arête à ajouter.
+ * @return true si l'arête a été ajoutée, false sinon.
+ */
 bool ajouter_arete(graphe *g, arete a)
 {
     // l'arête a n'est ajoutée que si les conditions suivantes sont remplies :
@@ -196,6 +255,12 @@ bool ajouter_arete(graphe *g, arete a)
     return false;
 }
 
+/**
+ * @brief Retourne l'index d'une arête dans le graphe, ou UNKNOWN_INDEX si elle n'existe pas.
+ * @param g Pointeur constant vers le graphe.
+ * @param a Arête à rechercher.
+ * @return Index de l'arête ou UNKNOWN_INDEX.
+ */
 size_t index_arete(graphe const *g, arete a)
 {
     // retourne l'index de l'arête au sein du tableau d'arêtes de g si l'arête a existe dans g,
@@ -215,13 +280,15 @@ size_t index_arete(graphe const *g, arete a)
     return UNKNOWN_INDEX;
 }
 
+/**
+ * @brief Remplit un tableau avec les sommets adjacents à un sommet donné.
+ * @param g Pointeur constant vers le graphe.
+ * @param s Sommet dont on cherche les adjacents.
+ * @param sa Tableau de sommets à remplir.
+ * @return Nombre de sommets adjacents trouvés.
+ */
 size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[])
 {
-    // remplit le tableau sa avec les sommets adjacents de s dans g
-    // et retourne le nombre de sommets ainsi stockés
-    // (on suppose que s fait bien partie du graphe g)
-    // (le tableau sa est supposé assez grand pour contenir les sommets adjacents de s)
-
     int nb_sommets_stockes = 0;
 
     for (size_t i = 0; i < g->nb_aretes; i++)
@@ -241,6 +308,11 @@ size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[])
     return nb_sommets_stockes;
 }
 
+/**
+ * @brief Affiche un tableau d'entiers.
+ * @param tab Tableau à afficher.
+ * @param taille Taille du tableau.
+ */
 void afficher_tab(size_t tab[], size_t taille)
 {
     for (size_t i = 0; i < taille; i++)
@@ -249,6 +321,10 @@ void afficher_tab(size_t tab[], size_t taille)
     }
 }
 
+/**
+ * @brief Affiche un sommet (station ou switch).
+ * @param s Sommet à afficher.
+ */
 void afficher_sommet(sommet s)
 {
     if (s.type_equipement == TYPE_STATION)
@@ -262,6 +338,10 @@ void afficher_sommet(sommet s)
     }
 }
 
+/**
+ * @brief Affiche une arête du graphe.
+ * @param a Arête à afficher.
+ */
 void afficher_arete(arete a)
 {
     printf("(");
@@ -271,6 +351,10 @@ void afficher_arete(arete a)
     printf(") - Poids: %lu\n", a.poids);
 }
 
+/**
+ * @brief Affiche l'ensemble du graphe (équipements et liens).
+ * @param g Pointeur constant vers le graphe à afficher.
+ */
 void afficher_graphe(graphe const *g)
 {
     printf("# Nombre d'équipements : %lu\n", g->ordre);
