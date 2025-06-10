@@ -1,4 +1,4 @@
-#include <ethernet.h>
+#include "ethernet.h"
 
 void afficher_tram_user(const Trame *trame)
 {
@@ -13,6 +13,7 @@ void afficher_tram_user(const Trame *trame)
     {
         printf("%02x ", trame->preambule[i]);
     }
+
     printf("\n");
 
     printf("SFD: %02x\n", trame->SFD);
