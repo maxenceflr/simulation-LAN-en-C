@@ -58,18 +58,6 @@ typedef struct Switch
     port *tab_commutation;
 } Switch;
 
-typedef struct Trame
-{
-    uint8_t preambule[7];
-    uint8_t SFD;
-    adresseMAC adrDest;
-    adresseMAC adrSrc;
-    uint16_t type;
-    adresseIP adrIP;
-    uint8_t *data;
-    uint32_t FCS; // Contrôle de redondance cyclique
-} Trame;
-
 // Fonctions d'affichage
 
 void afficherIP(adresseIP adresse);
