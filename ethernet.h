@@ -1,7 +1,7 @@
 #ifndef ETHERNET_H
 #define ETHERNET_H
 
-#include <reseau.h>
+#include "reseau.h"
 
 typedef struct Trame
 {
