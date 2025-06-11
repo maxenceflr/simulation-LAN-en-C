@@ -12,43 +12,56 @@
 // Constante pour indiquer qu'un index n'a pas été trouvé
 static const size_t UNKNOWN_INDEX = -1;
 
-// Enumération pour distinguer le type d'équipement d'un sommet
+
+/**
+ * @brief Type d'équipement pour un sommet.
+ */
 typedef enum
 {
-    TYPE_SWITCH,
-    TYPE_STATION,
+    TYPE_SWITCH,  /**< Switch réseau */
+    TYPE_STATION, /**< Station réseau */
 } TypeTag;
 
-// Structure représentant un sommet du graphe (station ou switch)
+
+/**
+ * @brief Structure représentant un sommet du graphe (station ou switch).
+ */
 typedef struct sommet
 {
-    TypeTag type_equipement; // Tag pour savoir quel type d'équipement est stocké
+    TypeTag type_equipement; /**< Type d'équipement */
     union
     {
-        Station station; // Si c'est une station
-        Switch s_switch; // Si c'est un switch
+        Station station; /**< Station */
+        Switch s_switch; /**< Switch */
     };
 } sommet;
 
-// Structure représentant une arête (lien) entre deux sommets
+/**
+ * @brief Structure représentant une arête du graphe.
+ */
 typedef struct arete
 {
-    sommet s1;    // Premier sommet
-    sommet s2;    // Second sommet
-    size_t poids; // Poids de l'arête (ex : coût, distance, etc.)
+    sommet s1;    /**< Premier sommet */
+    sommet s2;    /**< Deuxième sommet */
+    size_t poids; /**< Poids de l'arête */
 } arete;
 
-// Structure principale du graphe
+/**
+ * @brief Structure représentant un graphe réseau.
+ */
 typedef struct graphe
 {
-    size_t nb_switch;       // Nombre de switchs dans le graphe
-    size_t nb_station;      // Nombre de stations dans le graphe
-    size_t ordre;           // Nombre total de sommets
-    size_t sommet_capacite; // Capacité allouée pour les sommets
-    sommet *sommet;         // Tableau dynamique de sommets
-    size_t nb_aretes;       // Nombre d'arêtes
-    size_t aretes_capacite; // Capacité allouée pour les arêtes
-    arete *aretes;          // Tableau dynamique d'arêtes
+    size_t nb_switch;  /**< Nombre de switches */
+    size_t nb_station; /**< Nombre de stations */
+
+    size_t ordre;           /**< Nombre de sommets */
+    size_t sommet_capacite; /**< Capacité du tableau de sommets */
+    sommet *sommet;         /**< Tableau de sommets */
+
+    arete *aretes;          /**< Tableau d'arêtes */
+    size_t aretes_capacite; /**< Capacité du tableau d'arêtes */
+    size_t nb_aretes;       /**< Nombre d'arêtes */
+
 } graphe;
 
 // Déclarations des fonctions de gestion du graphe
@@ -64,8 +77,15 @@ size_t index_sommet(graphe const *g, sommet s);
 bool existe_arete(graphe const *g, arete a);
 bool ajouter_arete(graphe *g, arete a);
 bool equals_sommet(sommet s1, sommet s2);
+<<<<<<< HEAD
 bool equalsArete(arete a1, arete a2);
+=======
+size_t index_arete(graphe const *g, arete a);
+>>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
 size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[]);
 void afficher_graphe(graphe const *g);
+uint32_t nb_composantes_connexes(graphe const *g);
+void visite_composante_connexe(graphe const *g, sommet s, bool *visite);
+bool sont_connectes(graphe const *g, sommet s1, sommet s2);
 
 #endif

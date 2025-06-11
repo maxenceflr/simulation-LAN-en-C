@@ -1,8 +1,9 @@
 #include "reseau.h"
 
 /**
- * Affiche une adresse IP au format classique (ex: 192.168.1.1)
- * @param adresse Structure adresseIP à afficher.
+
+ * @brief Affiche une adresse IP au format standard.
+ * @param adresse L'adresse IP à afficher.
  */
 void afficherIP(adresseIP adresse)
 {
@@ -10,8 +11,9 @@ void afficherIP(adresseIP adresse)
 }
 
 /**
- * Affiche une adresse MAC au format classique (ex: 01:23:45:67:89:ab)
- * @param adresse Structure adresseMAC à afficher.
+
+ * @brief Affiche une adresse MAC au format hexadécimal séparé par des ':'.
+ * @param adresse L'adresse MAC à afficher.
  */
 void afficherMAC(adresseMAC adresse)
 {
@@ -24,8 +26,9 @@ void afficherMAC(adresseMAC adresse)
 }
 
 /**
- * Affiche les informations d'un switch réseau.
- * @param sswitch Structure Switch à afficher.
+
+ * @brief Affiche les informations d'un switch réseau.
+ * @param sswitch Le switch à afficher.
  */
 void afficherSwitch(Switch sswitch)
 {
@@ -37,8 +40,9 @@ void afficherSwitch(Switch sswitch)
 }
 
 /**
- * Affiche les informations d'une station réseau.
- * @param station Structure Station à afficher.
+
+ * @brief Affiche les informations d'une station réseau.
+ * @param station La station à afficher.
  */
 void afficherStation(Station station)
 {
@@ -51,8 +55,9 @@ void afficherStation(Station station)
 }
 
 /**
- * Affiche la table de commutation d'un switch (adresses MAC connues par port).
- * @param r_switch Structure Switch à afficher.
+
+ * @brief Affiche la table de commutation d'un switch.
+ * @param r_switch Le switch dont la table de commutation doit être affichée.
  */
 void afficherTableCommutation(Switch r_switch)
 {
@@ -72,8 +77,9 @@ void afficherTableCommutation(Switch r_switch)
 }
 
 /**
- * Initialise une structure Station avec une adresse IP et une adresse MAC.
- * @param station Pointeur vers la structure Station à initialiser.
+
+ * @brief Initialise une station avec une adresse IP et MAC.
+ * @param station Pointeur vers la station à initialiser.
  * @param adrIP Adresse IP à affecter.
  * @param adrMAC Adresse MAC à affecter.
  */
@@ -85,11 +91,11 @@ void init_station(Station *station, adresseIP adrIP, adresseMAC adrMAC)
 }
 
 /**
- * Initialise une structure Switch avec un nombre de ports, une priorité et une adresse MAC.
- * Alloue la mémoire pour la table de commutation.
- * @param r_switch Pointeur vers la structure Switch à initialiser.
- * @param nbPort Nombre de ports du switch.
- * @param numPriorite Priorité STP du switch.
+
+ * @brief Initialise un switch avec un nombre de ports, une priorité et une adresse MAC.
+ * @param r_switch Pointeur vers le switch à initialiser.
+ * @param nbPort Nombre de ports.
+ * @param numPriorite Priorité du switch.
  * @param adrMac Adresse MAC du switch.
  */
 void init_switch(Switch *r_switch, size_t nbPort, size_t numPriorite, adresseMAC adrMac)
@@ -107,8 +113,9 @@ void init_switch(Switch *r_switch, size_t nbPort, size_t numPriorite, adresseMAC
 }
 
 /**
- * Libère la mémoire allouée pour un switch et ses ports.
- * @param r_switch Pointeur vers la structure Switch à désallouer.
+
+ * @brief Libère la mémoire et réinitialise un switch.
+ * @param r_switch Pointeur vers le switch à désinitialiser.
  */
 void deinit_switch(Switch *r_switch)
 {
@@ -134,8 +141,9 @@ void deinit_switch(Switch *r_switch)
 }
 
 /**
- * Initialise un port réseau (tableau d'adresses MAC).
- * @param r_port Pointeur vers la structure port à initialiser.
+
+ * @brief Initialise un port réseau.
+ * @param r_port Pointeur vers le port à initialiser.
  */
 void init_port(port *r_port)
 {
@@ -146,8 +154,9 @@ void init_port(port *r_port)
 }
 
 /**
- * Libère la mémoire allouée pour un port réseau.
- * @param r_port Pointeur vers la structure port à désallouer.
+
+ * @brief Libère la mémoire d'un port réseau.
+ * @param r_port Pointeur vers le port à désinitialiser.
  */
 void deinit_port(port *r_port)
 {
@@ -158,7 +167,7 @@ void deinit_port(port *r_port)
 }
 
 /**
- * Ajoute une adresse MAC à la table d'un port.
+ * @brief Ajoute une adresse MAC à un port, si la capacité n'est pas dépassée.
  * @param port Pointeur vers le port.
  * @param adrMAC Adresse MAC à ajouter.
  */
@@ -175,7 +184,18 @@ void ajouter_adresse_port(port *port, adresseMAC adrMAC)
 }
 
 /**
- * Compare deux ports pour vérifier s'ils sont identiques (mêmes adresses MAC).
+ * @brief Compare deux adresses MAC pour vérifier si elles sont identiques.
+ * @param adr1 Première adresse MAC.
+ * @param adr2 Deuxième adresse MAC.
+ * @return true si les adresses MAC sont identiques, false sinon.
+ */
+bool equals_adresseMAC(adresseMAC adr1, adresseMAC adr2)
+{
+    return adr1.entier == adr2.entier;
+}
+
+/**
+ * @brief Compare deux ports pour vérifier s'ils sont identiques.
  * @param p1 Premier port.
  * @param p2 Deuxième port.
  * @return true si les ports sont identiques, false sinon.

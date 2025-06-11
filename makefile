@@ -7,10 +7,17 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror -Wno-unused-parameter -pedantic
 
 # Source files
+<<<<<<< HEAD
 SRCS = main.c graphe.c reseau.c initReseau.c stp.c
 
 # Header files
 HEADERS = graphe.h reseau.h initReseau.h stp.h
+=======
+SRCS = main.c graphe.c reseau.c initReseau.c ethernet.c
+
+# Header files
+HEADERS = graphe.h reseau.h initReseau.h ethernet.h
+>>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
 
 # Object files
 OBJS = $(SRCS:.c=.o)
