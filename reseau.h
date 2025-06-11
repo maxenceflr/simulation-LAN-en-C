@@ -36,11 +36,18 @@ typedef struct Station
     size_t id;         // Identifiant unique de la station
 } Station;
 
+typedef enum {
+    STP_INCONNU,
+    STP_RACINE,
+    STP_DESIGNE,
+    STP_BLOQUE
+} etatPortSTP;
 // Structure représentant un port de switch
 typedef struct port
 {
     size_t nb_adressesMAC;
     size_t adresses_capacite;   // Nombre d'adresses MAC connues sur ce port
+    etatPortSTP etat;
     adresseMAC *tab_adresseMAC; // Tableau dynamique d'adresses MAC connues sur ce port
 } port;
 
