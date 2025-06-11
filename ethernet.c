@@ -10,6 +10,7 @@
  * @param data Pointeur vers les données à inclure dans la trame.
  * @param data_length Taille des données.
  */
+
 void init_trame(Trame *trame, adresseMAC adrDest, adresseMAC adrSrc, uint16_t type, adresseIP adrIP, const uint8_t *data, size_t data_length)
 {
     if (trame == NULL)
@@ -52,6 +53,31 @@ void init_trame(Trame *trame, adresseMAC adrDest, adresseMAC adrSrc, uint16_t ty
 
     // Calcul du FCS (Frame Check Sequence)
     trame->FCS = 0; // Pour simplifier, on initialise à 0. Le calcul réel dépendra des données.
+}
+
+void deinit_trame(Trame *trame)
+{
+    if (trame == NULL)
+    {
+        fprintf(stderr, "Erreur de désinitialisation de la trame\n");
+        return;
+    }
+
+    // Libération de la mémoire allouée pour les données
+    if (trame->data != NULL)
+    {
+        free(trame->data);
+        trame->data = NULL;
+    }
+
+    // Réinitialisation des champs de la trame
+
+    memset(trame->preambule, 0, sizeof(trame->preambule));
+    trame->SFD = 0;
+    memset(&trame->adrDest, 0, sizeof(adresseMAC));
+    memset(&trame->adrSrc, 0, sizeof(adresseMAC));
+    trame->type = 0;
+    trame->FCS = 0;
 }
 
 /**
@@ -107,4 +133,33 @@ void afficher_tram_user(const Trame *trame)
     }
 
     printf("FCS: %08x\n", trame->FCS);
+}
+
+bool envoyer_tram(const Trame *trame, graphe *g)
+{
+    if (trame == NULL)
+    {
+        fprintf(stderr, "Erreur d'envoi de la trame: trame est NULL\n");
+        return false; // Retourne false si la trame est NULL
+    }
+
+    adresseMAC adrDest = trame->adrDest;
+    adresseMAC adrSrc = trame->adrSrc;
+
+    sommet source;
+    sommet destination;
+
+    for (size_t i = 0; i < g->ordre; i++)
+    {
+        if (g->sommet[i].station.adrMAC.entier == adrSrc.entier)
+        {
+            source = g->sommet[i];
+        }
+        else if (g->sommet[i].station.adrMAC.entier == adrDest.entier)
+        {
+            destination = g->sommet[i];
+        }
+    }
+
+    return sont_connectes(g, source, destination); // Retourne true si l'envoi a réussi
 }

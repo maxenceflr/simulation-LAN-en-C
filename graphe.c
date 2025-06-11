@@ -309,6 +309,82 @@ size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[])
 }
 
 /**
+ * @brief Visite récursivement les sommets d'une composante connexe.
+ * @param g Pointeur constant vers le graphe.
+ * @param s Sommet de départ pour la visite.
+ * @param visite Tableau de booléens indiquant si un sommet a été visité.
+ */
+void visite_composante_connexe(graphe const *g, sommet s, bool *visite)
+{
+    visite[index_sommet(g, s)] = true;
+    sommet sa[NOMBRE_SOMMETS_MAX];
+    int nb_sommetadj = sommets_adjacents(g, s, sa);
+
+    for (int i = 0; i < nb_sommetadj; i++)
+    {
+        if (!visite[index_sommet(g, sa[i])])
+        {
+            visite_composante_connexe(g, sa[i], visite);
+        }
+    }
+}
+
+/**
+ * @brief Compte le nombre de composantes connexes dans le graphe.
+ * @param g Pointeur constant vers le graphe.
+ * @return Nombre de composantes connexes.
+ */
+uint32_t nb_composantes_connexes(graphe const *g)
+{
+    bool *visite = malloc(g->ordre * sizeof(bool));
+
+    for (size_t i = 0; i < g->ordre; i++)
+    {
+        visite[i] = false;
+    }
+
+    uint32_t nb_composante_conn = 0;
+
+    for (size_t index_sommet = 0; index_sommet < g->ordre; index_sommet++)
+    {
+        if (!visite[index_sommet])
+        {
+            visite_composante_connexe(g, g->sommet[index_sommet], visite);
+            nb_composante_conn++;
+        }
+    }
+
+    free(visite);
+
+    return nb_composante_conn;
+}
+
+/**
+ * @brief Vérifie si deux sommets sont connectés dans le graphe.
+ * @param g Pointeur constant vers le graphe.
+ * @param s1 Premier sommet.
+ * @param s2 Deuxième sommet.
+ * @return true si les sommets sont connectés, false sinon.
+ */
+bool sont_connectes(graphe const *g, sommet s1, sommet s2)
+{
+    bool *sommets_visite = calloc(g->ordre, sizeof(bool));
+
+    if (sommets_visite == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    visite_composante_connexe(g, s1, sommets_visite);
+
+    bool est_connecte = sommets_visite[index_sommet(g, s2)];
+
+    free(sommets_visite);
+
+    return est_connecte;
+}
+
+/**
  * @brief Affiche un tableau d'entiers.
  * @param tab Tableau à afficher.
  * @param taille Taille du tableau.
