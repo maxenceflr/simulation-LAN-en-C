@@ -142,6 +142,7 @@ void init_port(port *r_port)
     r_port->nb_adressesMAC = 0;
     r_port->adresses_capacite = TAILLE_ADRESSE_MAX;
     r_port->tab_adresseMAC = (adresseMAC *)malloc(TAILLE_ADRESSE_MAX * sizeof(adresseMAC));
+    r_port->etat=STP_INCONNU; 
 }
 
 /**

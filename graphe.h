@@ -64,6 +64,7 @@ size_t index_sommet(graphe const *g, sommet s);
 bool existe_arete(graphe const *g, arete a);
 bool ajouter_arete(graphe *g, arete a);
 bool equals_sommet(sommet s1, sommet s2);
+bool equalsArete(arete a1, arete a2);
 size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[]);
 void afficher_graphe(graphe const *g);
 
