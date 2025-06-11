@@ -1,10 +1,11 @@
 #include "initReseau.h"
 
 /**
- * Récupère le nombre d'équipements et de liens à partir de la première ligne du fichier.
- * @param ligne Ligne lue du fichier contenant deux entiers séparés par un espace.
- * @param nb_equipement Pointeur vers la variable où stocker le nombre d'équipements.
- * @param nb_lien Pointeur vers la variable où stocker le nombre de liens.
+
+ * @brief Récupère le nombre d'équipements et de liens à partir d'une ligne de texte.
+ * @param ligne Ligne de texte à analyser.
+ * @param nb_equipement Pointeur vers la variable de nombre d'équipements.
+ * @param nb_lien Pointeur vers la variable de nombre de liens.
  */
 void recuperer_nbEquipement_nbLien(const char *ligne, size_t *nb_equipement, size_t *nb_lien)
 {
@@ -20,9 +21,9 @@ void recuperer_nbEquipement_nbLien(const char *ligne, size_t *nb_equipement, siz
 }
 
 /**
- * Initialise une adresse IP à partir d'une chaîne de caractères.
- * @param adrIP Pointeur vers la structure adresseIP à remplir.
- * @param ip_str Chaîne de caractères représentant l'adresse IP (ex: "192.168.1.1").
+ * @brief Initialise une adresse IP à partir d'une chaîne de caractères.
+ * @param adrIP Pointeur vers l'adresse IP à initialiser.
+ * @param ip_str Chaîne de caractères représentant l'adresse IP.
  */
 void init_adrIP_from_text(adresseIP *adrIP, const char *ip_str)
 {
@@ -39,9 +40,10 @@ void init_adrIP_from_text(adresseIP *adrIP, const char *ip_str)
 }
 
 /**
- * Initialise une adresse MAC à partir d'une chaîne de caractères.
- * @param adrMAC Pointeur vers la structure adresseMAC à remplir.
- * @param mac_str Chaîne de caractères représentant l'adresse MAC (ex: "01:23:45:67:89:ab").
+
+ * @brief Initialise une adresse MAC à partir d'une chaîne de caractères.
+ * @param adrMAC Pointeur vers l'adresse MAC à initialiser.
+ * @param mac_str Chaîne de caractères représentant l'adresse MAC.
  */
 void init_adrMAC_from_text(adresseMAC *adrMAC, const char *mac_str)
 {
@@ -56,9 +58,9 @@ void init_adrMAC_from_text(adresseMAC *adrMAC, const char *mac_str)
 }
 
 /**
- * Initialise une structure Switch à partir d'une ligne de texte.
- * @param s_switch Pointeur vers la structure Switch à remplir.
- * @param switch_str Ligne de texte décrivant le switch (ex: "2;01:45:23:a6:f7:ab;8;1024").
+ * @brief Initialise un switch à partir d'une ligne de texte.
+ * @param s_switch Pointeur vers le switch à initialiser.
+ * @param switch_str Ligne de texte décrivant le switch.
  */
 void init_switch_from_text(Switch *s_switch, char *switch_str)
 {
@@ -77,9 +79,10 @@ void init_switch_from_text(Switch *s_switch, char *switch_str)
 }
 
 /**
- * Initialise une structure Station à partir d'une ligne de texte.
- * @param station Pointeur vers la structure Station à remplir.
- * @param station_str Ligne de texte décrivant la station (ex: "1;54:d6:a6:82:c5:23;130.79.80.21").
+
+ * @brief Initialise une station à partir d'une ligne de texte.
+ * @param station Pointeur vers la station à initialiser.
+ * @param station_str Ligne de texte décrivant la station.
  */
 void init_station_from_text(Station *station, char *station_str)
 {
@@ -101,10 +104,11 @@ void init_station_from_text(Station *station, char *station_str)
 }
 
 /**
- * Initialise une structure arete à partir d'une ligne de texte et du graphe.
- * @param g Pointeur vers le graphe contenant les sommets.
- * @param a Pointeur vers la structure arete à remplir.
- * @param arete_str Ligne de texte décrivant l'arête (ex: "0;1;4").
+
+ * @brief Initialise une arête à partir d'une ligne de texte.
+ * @param g Pointeur vers le graphe.
+ * @param a Pointeur vers l'arête à initialiser.
+ * @param arete_str Ligne de texte décrivant l'arête.
  */
 void init_arete_from_text(graphe *g, arete *a, char *arete_str)
 {
@@ -122,14 +126,10 @@ void init_arete_from_text(graphe *g, arete *a, char *arete_str)
 }
 
 /**
- * Initialise un graphe à partir d'un fichier texte.
- * @param g Pointeur vers la structure graphe à initialiser.
- * @param path Chemin du fichier texte à lire.
- *
- * Le fichier doit contenir :
- *  - Une première ligne avec le nombre d'équipements et de liens.
- *  - Les lignes suivantes pour chaque équipement (station ou switch).
- *  - Les dernières lignes pour chaque lien (arête).
+
+ * @brief Initialise un graphe à partir d'un fichier texte.
+ * @param g Pointeur vers le graphe à initialiser.
+ * @param path Chemin du fichier à lire.
  */
 void init_graph_from_file(graphe *g, const char *path)
 {
