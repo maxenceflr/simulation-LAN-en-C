@@ -178,6 +178,17 @@ void ajouter_adresse_port(port *port, adresseMAC adrMAC)
 }
 
 /**
+ * @brief Compare deux adresses MAC pour vérifier si elles sont identiques.
+ * @param adr1 Première adresse MAC.
+ * @param adr2 Deuxième adresse MAC.
+ * @return true si les adresses MAC sont identiques, false sinon.
+ */
+bool equals_adresseMAC(adresseMAC adr1, adresseMAC adr2)
+{
+    return adr1.entier == adr2.entier;
+}
+
+/**
  * @brief Compare deux ports pour vérifier s'ils sont identiques.
  * @param p1 Premier port.
  * @param p2 Deuxième port.
