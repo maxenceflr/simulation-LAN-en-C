@@ -56,6 +56,7 @@ size_t trouver_sommet_min_distance(size_t distances[], bool visite[], size_t nb_
             min_index = v;
         }
     }
+    printf("  %lu",min_index);
 
     return min_index;
 }
@@ -70,32 +71,27 @@ size_t trouver_sommet_min_distance(size_t distances[], bool visite[], size_t nb_
  * @param distances Tableau de sortie des distances
  * @param predecesseurs Tableau de sortie des prédécesseurs
  */
-void dijkstra(graphe *g, size_t source, size_t distances[], size_t predecesseurs[]) {
-    bool visite[g->ordre]; // Tableau de suivi des sommets visités
+void dijkstra(graphe *g, size_t source, size_t distances[], size_t *predecesseurs) {
+    bool visite[g->ordre];
 
-    // 1. Initialisation
+    // Initialisation
     for (size_t i = 0; i < g->ordre; i++) {
         distances[i] = INFINI;
-        predecesseurs[i] = UNKNOWN_INDEX;
+        predecesseurs[i] = UNKNOWN_INDEX;  // Ici on modifie directement via le pointeur
         visite[i] = false;
     }
-    distances[source] = 0; // Distance à la source = 0
+    distances[source] = 0;
 
-    // 2. Boucle principale
     for (size_t count = 0; count < g->ordre - 1; count++) {
-        // 2a. Choisir le sommet non visité avec la plus petite distance
         size_t u = trouver_sommet_min_distance(distances, visite, g->ordre);
-        if (u == UNKNOWN_INDEX) break; // Tous les sommets accessibles ont été visités
+        if (u == UNKNOWN_INDEX) break;
 
-        visite[u] = true; // 2b. Marquer comme visité
+        visite[u] = true;
 
-        // 2c. Parcourir tous les voisins
         for (size_t v = 0; v < g->ordre; v++) {
-            // Vérifier si c'est un voisin (arête existe)
             arete test_arete = {g->sommet[u], g->sommet[v], 0};
             if (!existe_arete(g, test_arete)) continue;
 
-            // Trouver le poids réel de l'arête
             size_t poids = 0;
             for (size_t i = 0; i < g->nb_aretes; i++) {
                 if (equalsArete(g->aretes[i], test_arete)) {
@@ -104,12 +100,49 @@ void dijkstra(graphe *g, size_t source, size_t distances[], size_t predecesseurs
                 }
             }
 
-            // Mettre à jour la distance si un chemin plus court est trouvé
-            if (!visite[v] && distances[u] != INFINI &&
-                distances[u] + poids < distances[v]) {
+            if (!visite[v] && distances[u] != INFINI && distances[u] + poids < distances[v]) {
                 distances[v] = distances[u] + poids;
-                predecesseurs[v] = u;
+                predecesseurs[v] = u; // Modification directe du tableau pointé
             }
         }
+    }
+}
+void afficher_arbre_stp(graphe *g, size_t racine_index, size_t *predecesseurs, size_t *distances) {
+    printf("\n===== Arbre STP =====\nDe (prédécesseur) --> (sommet) [distance depuis racine]\n");
+
+    for (size_t i = 0; i < g->ordre; i++) {
+        if (i == racine_index) continue;
+
+        size_t pred = predecesseurs[i];
+
+        if (pred == UNKNOWN_INDEX) {
+            printf("De INCONNU --> ");
+        } else {
+            printf("De ");
+            if (g->sommet[pred].type_equipement == TYPE_SWITCH)
+                printf("Switch");
+            else if (g->sommet[pred].type_equipement == TYPE_STATION)
+                printf("Station");
+            else
+                printf("Inconnu");
+
+            printf(" %zu --> ", pred);
+        }
+
+        if (g->sommet[i].type_equipement == TYPE_SWITCH)
+            printf("Switch");
+        else if (g->sommet[i].type_equipement == TYPE_STATION)
+            printf("Station");
+        else
+            printf("Inconnu");
+
+        printf(" %zu (distance = ", i);
+
+        if (distances[i] == INFINI)
+            printf("∞");
+        else
+            printf("%zu", distances[i]);
+
+        printf(")\n");
     }
 }
