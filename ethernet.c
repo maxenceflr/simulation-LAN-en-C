@@ -1,16 +1,5 @@
 #include "ethernet.h"
 
-/**
- * @brief Initialise une trame Ethernet avec les paramètres donnés.
- * @param trame Pointeur vers la trame à initialiser.
- * @param adrDest Adresse MAC de destination.
- * @param adrSrc Adresse MAC source.
- * @param type Type de la trame.
- * @param adrIP Adresse IP (non utilisée ici, mais peut servir pour les données).
- * @param data Pointeur vers les données à inclure dans la trame.
- * @param data_length Taille des données.
- */
-
 void init_trame(Trame *trame, adresseMAC adrDest, adresseMAC adrSrc, uint16_t type, adresseIP adrIP, const uint8_t *data, size_t data_length)
 {
     if (trame == NULL)
@@ -80,10 +69,6 @@ void deinit_trame(Trame *trame)
     trame->FCS = 0;
 }
 
-/**
- * @brief Affiche le contenu d'une trame Ethernet pour l'utilisateur.
- * @param trame Pointeur constant vers la trame à afficher.
- */
 void afficher_tram_user(const Trame *trame)
 {
     if (trame == NULL)
@@ -135,6 +120,9 @@ void afficher_tram_user(const Trame *trame)
     printf("FCS: %08x\n", trame->FCS);
 }
 
+/**
+ * @brief Envoie une trame Ethernet à travers le graphe.
+ */
 bool envoyer_tram(const Trame *trame, graphe *g)
 {
     if (trame == NULL)
@@ -151,15 +139,22 @@ bool envoyer_tram(const Trame *trame, graphe *g)
 
     for (size_t i = 0; i < g->ordre; i++)
     {
-        if (g->sommet[i].station.adrMAC.entier == adrSrc.entier)
+        if (g->sommet[i].station.adrMac.entier == adrSrc.entier)
         {
             source = g->sommet[i];
         }
-        else if (g->sommet[i].station.adrMAC.entier == adrDest.entier)
+        else if (g->sommet[i].station.adrMac.entier == adrDest.entier)
         {
             destination = g->sommet[i];
         }
     }
 
-    return sont_connectes(g, source, destination); // Retourne true si l'envoi a réussi
+    if (sont_connectes(g, source, destination))
+    {
+        printf("Envoi de la trame de %s à %s\n", source.station.adrMac.bytes, destination.station.adrMac.bytes);
+        return true;
+    }
+
+    printf("Echec de l'envoi de la trame de %s à %s\n", source.station.adrMac.bytes, destination.station.adrMac.bytes);
+    return false;
 }
