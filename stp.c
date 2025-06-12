@@ -4,8 +4,6 @@
 
 /**
  * Trouve le switch avec la plus petite racine (meilleur Root Bridge).
- * @param g Pointeur vers le graphe.
- * @return Pointeur vers le meilleur switch (NULL si aucun switch trouvé).
  */
 Switch* trouver_racine(graphe *g) {
     if (g == NULL || g->ordre == 0) {
