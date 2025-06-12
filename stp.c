@@ -43,9 +43,7 @@ Switch* trouver_racine(graphe *g) {
 
 
 
-/**
- * Trouve l'index du sommet non visité avec la distance minimale
- */
+
 size_t trouver_sommet_min_distance(size_t distances[], bool visite[], size_t nb_sommets) {
     size_t min_index = UNKNOWN_INDEX;
     size_t min_distance = INFINI;
@@ -71,13 +69,13 @@ size_t trouver_sommet_min_distance(size_t distances[], bool visite[], size_t nb_
  * @param distances Tableau de sortie des distances
  * @param predecesseurs Tableau de sortie des prédécesseurs
  */
-void dijkstra(graphe *g, size_t source, size_t distances[], size_t *predecesseurs) {
+void dijkstra(graphe *g, size_t source, size_t *distances, size_t *predecesseurs) {
     bool visite[g->ordre];
 
     // Initialisation
     for (size_t i = 0; i < g->ordre; i++) {
         distances[i] = INFINI;
-        predecesseurs[i] = UNKNOWN_INDEX;  // Ici on modifie directement via le pointeur
+        predecesseurs[i] = UNKNOWN_INDEX;
         visite[i] = false;
     }
     distances[source] = 0;
@@ -102,11 +100,12 @@ void dijkstra(graphe *g, size_t source, size_t distances[], size_t *predecesseur
 
             if (!visite[v] && distances[u] != INFINI && distances[u] + poids < distances[v]) {
                 distances[v] = distances[u] + poids;
-                predecesseurs[v] = u; // Modification directe du tableau pointé
+                predecesseurs[v] = u;
             }
         }
     }
 }
+
 void afficher_arbre_stp(graphe *g, size_t racine_index, size_t *predecesseurs, size_t *distances) {
     printf("\n===== Arbre STP =====\nDe (prédécesseur) --> (sommet) [distance depuis racine]\n");
 
