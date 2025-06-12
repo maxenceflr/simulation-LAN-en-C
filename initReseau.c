@@ -3,9 +3,6 @@
 /**
 
  * @brief Récupère le nombre d'équipements et de liens à partir d'une ligne de texte.
- * @param ligne Ligne de texte à analyser.
- * @param nb_equipement Pointeur vers la variable de nombre d'équipements.
- * @param nb_lien Pointeur vers la variable de nombre de liens.
  */
 void recuperer_nbEquipement_nbLien(const char *ligne, size_t *nb_equipement, size_t *nb_lien)
 {
@@ -22,8 +19,6 @@ void recuperer_nbEquipement_nbLien(const char *ligne, size_t *nb_equipement, siz
 
 /**
  * @brief Initialise une adresse IP à partir d'une chaîne de caractères.
- * @param adrIP Pointeur vers l'adresse IP à initialiser.
- * @param ip_str Chaîne de caractères représentant l'adresse IP.
  */
 void init_adrIP_from_text(adresseIP *adrIP, const char *ip_str)
 {
@@ -103,13 +98,7 @@ void init_station_from_text(Station *station, char *station_str)
     init_station(station, adr_IP, adr_MAC);
 }
 
-/**
 
- * @brief Initialise une arête à partir d'une ligne de texte.
- * @param g Pointeur vers le graphe.
- * @param a Pointeur vers l'arête à initialiser.
- * @param arete_str Ligne de texte décrivant l'arête.
- */
 void init_arete_from_text(graphe *g, arete *a, char *arete_str)
 {
     size_t index_sommet_1, index_sommet_2, poids = 0;
@@ -125,12 +114,7 @@ void init_arete_from_text(graphe *g, arete *a, char *arete_str)
     a->poids = poids;
 }
 
-/**
 
- * @brief Initialise un graphe à partir d'un fichier texte.
- * @param g Pointeur vers le graphe à initialiser.
- * @param path Chemin du fichier à lire.
- */
 void init_graph_from_file(graphe *g, const char *path)
 {
     FILE *f = fopen(path, "r");
