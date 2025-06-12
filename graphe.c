@@ -1,15 +1,10 @@
 #include "graphe.h"
 
 /**
-<<<<<<< HEAD
  * Initialise la structure du graphe :
  * - Alloue la mémoire pour les sommets et les arêtes
  * - Initialise les compteurs à zéro
  * @param g Pointeur vers la structure graphe à initialiser.
-=======
- * @brief Initialise la structure d'un graphe.
- * @param g Pointeur vers le graphe à initialiser.
->>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
  */
 void init_graphe(graphe *g)
 {
@@ -24,14 +19,9 @@ void init_graphe(graphe *g)
 }
 
 /**
-<<<<<<< HEAD
  * Libère la mémoire allouée pour le graphe.
  * Appelle aussi les fonctions de désallocation pour chaque switch.
  * @param g Pointeur vers la structure graphe à désallouer.
-=======
- * @brief Libère la mémoire d'un graphe et de ses sommets.
- * @param g Pointeur vers le graphe à désinitialiser.
->>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
  */
 void deinit_graphe(graphe *g)
 {
@@ -56,16 +46,10 @@ void deinit_graphe(graphe *g)
 }
 
 /**
-<<<<<<< HEAD
  * Ajoute un sommet de type switch au graphe.
  * Incrémente le nombre de switchs et l'ordre du graphe.
  * @param g Pointeur vers le graphe.
  * @param sswitch Structure Switch à ajouter.
-=======
- * @brief Ajoute un sommet de type switch au graphe.
- * @param g Pointeur vers le graphe.
- * @param sswitch Switch à ajouter.
->>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
  */
 void ajouter_sommet_switch(graphe *g, Switch sswitch)
 {
@@ -82,16 +66,10 @@ void ajouter_sommet_switch(graphe *g, Switch sswitch)
 }
 
 /**
-<<<<<<< HEAD
  * Ajoute un sommet de type station au graphe.
  * Incrémente le nombre de stations et l'ordre du graphe.
  * @param g Pointeur vers le graphe.
  * @param station Structure Station à ajouter.
-=======
- * @brief Ajoute un sommet de type station au graphe.
- * @param g Pointeur vers le graphe.
- * @param station Station à ajouter.
->>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
  */
 void ajouter_sommet_station(graphe *g, Station station)
 {
@@ -108,15 +86,9 @@ void ajouter_sommet_station(graphe *g, Station station)
 }
 
 /**
-<<<<<<< HEAD
  * Retourne l'ordre du graphe (nombre de sommets).
  * @param g Pointeur vers le graphe.
  * @return Nombre de sommets dans le graphe.
-=======
- * @brief Retourne le nombre de sommets du graphe.
- * @param g Pointeur constant vers le graphe.
- * @return Nombre de sommets.
->>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
  */
 size_t ordre(graphe const *g)
 {
@@ -124,15 +96,9 @@ size_t ordre(graphe const *g)
 }
 
 /**
-<<<<<<< HEAD
  * Retourne le nombre d'arêtes du graphe.
  * @param g Pointeur vers le graphe.
  * @return Nombre d'arêtes dans le graphe.
-=======
- * @brief Retourne le nombre d'arêtes du graphe.
- * @param g Pointeur constant vers le graphe.
- * @return Nombre d'arêtes.
->>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
  */
 size_t nb_aretes(graphe const *g)
 {
@@ -140,15 +106,9 @@ size_t nb_aretes(graphe const *g)
 }
 
 /**
-<<<<<<< HEAD
  * Ajoute un sommet générique (station ou switch) au graphe.
  * @param g Pointeur vers le graphe.
  * @param s_sommet Structure sommet à ajouter.
-=======
- * @brief Ajoute un sommet générique au graphe.
- * @param g Pointeur vers le graphe.
- * @param s_sommet Sommet à ajouter.
->>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
  */
 void ajouter_sommet(graphe *g, sommet s_sommet)
 {
@@ -259,25 +219,23 @@ bool existe_arete(graphe const *g, arete a)
  */
 bool ajouter_arete(graphe *g, arete a)
 {
-    if (!equals_sommet(a.s1, a.s2) &&
-        (index_sommet(g, a.s1) != UNKNOWN_INDEX && index_sommet(g, a.s2) != UNKNOWN_INDEX) &&
-        !existe_arete(g, a))
+    if (g->nb_aretes >= g->aretes_capacite)
     {
-        if (g->nb_aretes == g->aretes_capacite)
-        {
-            size_t ancienne_capacite = g->aretes_capacite;
-            g->aretes_capacite *= 2;
-            arete *new_tab = (arete *)malloc(g->aretes_capacite * sizeof(arete));
-            memcpy(new_tab, g->aretes, ancienne_capacite * sizeof(arete));
-            free(g->aretes);
-            g->aretes = new_tab;
-        }
-        g->aretes[g->nb_aretes] = a;
-        g->nb_aretes += 1;
-        return true;
+        fprintf(stderr, "Capacité maximale d'arêtes atteinte\n");
+        return false;
     }
-    return false;
+/*FAIT BUGGER LE CODE
+    if (existe_arete(g, a)) // Optionnel : éviter doublons
+    {
+        fprintf(stderr, "Arête déjà existante\n");
+        return false;
+    }
+*/
+    g->aretes[g->nb_aretes] = a;
+    g->nb_aretes++;
+    return true;
 }
+
 
 /**
 
@@ -421,7 +379,6 @@ void afficher_tab(size_t tab[], size_t taille)
         printf("%lu ", tab[i]);
     }
 }
->>>>>>> defb1395c615ea728e7b473cfb69bb1e295a8009
 
 /**
  * @brief Affiche un sommet (station ou switch).

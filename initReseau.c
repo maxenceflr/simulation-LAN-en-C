@@ -150,6 +150,7 @@ void init_graph_from_file(graphe *g, const char *path)
         {
             // Lecture de la première ligne : nombre d'équipements et de liens
             recuperer_nbEquipement_nbLien(ligne, &nb_equipement, &nb_lien);
+            printf("Il y a %zu liens, et %zu equipement\n", nb_lien, nb_equipement);
             init_graphe(g);
         }
         // Lecture des lignes d'équipements (stations ou switchs)
