@@ -16,6 +16,12 @@ int main()
     printf("Nombre de composantes connexes: %u\n", nb_composantes_connexes(&g));
     afficher_graphe(&g);
 
+
+
+
+
+    
+
     // Trouver la racine (meilleur switch)
     Switch *racine_switch = trouver_racine(&g);
     if (racine_switch == NULL) {

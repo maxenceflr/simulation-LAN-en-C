@@ -37,7 +37,7 @@ Switch* trouver_racine(graphe *g) {
             }
         }
     }
-
+    printf("La racine est le switch %lu",meilleur_switch->id);
     return meilleur_switch; // Retourne NULL si aucun switch n'est trouvé
 }
 
@@ -54,7 +54,7 @@ size_t trouver_sommet_min_distance(size_t distances[], bool visite[], size_t nb_
             min_index = v;
         }
     }
-    printf("  %lu",min_index);
+    //printf("  %lu",min_index);
 
     return min_index;
 }
@@ -64,10 +64,6 @@ size_t trouver_sommet_min_distance(size_t distances[], bool visite[], size_t nb_
 
 /**
  * Implémentation de Dijkstra pour trouver les plus courts chemins depuis une source
- * @param g Pointeur vers le graphe
- * @param source Index du sommet source
- * @param distances Tableau de sortie des distances
- * @param predecesseurs Tableau de sortie des prédécesseurs
  */
 void dijkstra(graphe *g, size_t source, size_t *distances, size_t *predecesseurs) {
     bool visite[g->ordre];
@@ -145,3 +141,74 @@ void afficher_arbre_stp(graphe *g, size_t racine_index, size_t *predecesseurs, s
         printf(")\n");
     }
 }
+
+/*AUTRE SOLUTION
+
+
+
+#define INFINI 9999
+
+
+void initialiser_graphe(graphe *g) {
+   for (int i = 0; i < g->nbSommets; i++) {
+        if (r->sommet[i].type == COMMUTATEUR) {
+           Switch *c = &r->sommet[i].e.c;
+
+
+           // Chaque switch se considère comme root au départ
+           c->root_id = c->adrMAC;
+           //c->root_prio = c->priorite;
+           c->cout_vers_root = 0;
+
+
+           // Initialisation des états des ports STP
+           for (size_t p = 0; p < c->nb_ports; ++p) {
+               c->tab_commutation[p].id_port     = p;
+               c->tab_commutation[p].etat        = STP_INCONNU;
+               c->tab_commutation[p].connecte_a  = 0;  // ou une valeur MAC nulle
+               // si port contient d'autres champs, initialise-les ici aussi...
+           }
+       }
+   }
+}
+
+
+
+
+void propager_bpdu(graphe *r, size_t index_emetteur) {
+   if (index_emetteur >= r->ordre) return;
+
+
+   sommet *src_obj = &r->sommet[index_emetteur];
+   if (src_obj->type_equipement != TYPE_SWITCH) return;
+
+
+   Switch *src = &src_obj->s_switch;
+
+
+   for (size_t i = 0; i < r->nb_aretes; ++i) {
+       arete a = r->aretes[i];
+       sommet *dest_obj = NULL;
+
+
+       // Vérifier si le switch est connecté via cette arête
+       if (equals_sommet(a.s1, *src_obj)) {
+           dest_obj = &a.s2;
+       } else if (equals_sommet(a.s2, *src_obj)) {
+           dest_obj = &a.s1;
+       } else {
+           continue;
+       }
+
+
+       if (dest_obj->type_equipement != TYPE_SWITCH) continue;
+
+
+       Switch *dest = &dest_obj->s_switch;
+   }
+}
+
+
+       // Calculer le coût total de la BPDU en passant par cette arête
+     
+*/
