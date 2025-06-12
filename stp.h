@@ -33,7 +33,8 @@ size_t trouver_sommet_min_distance(size_t distances[], bool visite[], size_t nb_
  * @param distances Tableau de sortie des distances.
  * @param predecesseurs Tableau de sortie des prédécesseurs.
  */
-void dijkstra(graphe *g, size_t source, size_t distances[], size_t *predecesseurs);
+void dijkstra(graphe *g, size_t source, size_t *distances, size_t *predecesseurs);
+
 
 /**
  * @brief Affiche l'arbre STP (Spanning Tree Protocol) à partir de la racine.
