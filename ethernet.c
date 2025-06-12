@@ -135,6 +135,12 @@ void afficher_tram_user(const Trame *trame)
     printf("FCS: %08x\n", trame->FCS);
 }
 
+/**
+ * @brief Envoie une trame Ethernet à travers le graphe.
+ * @param trame Pointeur constant vers la trame à envoyer.
+ * @param g Pointeur vers le graphe dans lequel la trame doit être envoyée.
+ * @return true si l'envoi a réussi, false sinon.
+ */
 bool envoyer_tram(const Trame *trame, graphe *g)
 {
     if (trame == NULL)
@@ -151,15 +157,16 @@ bool envoyer_tram(const Trame *trame, graphe *g)
 
     for (size_t i = 0; i < g->ordre; i++)
     {
-        if (g->sommet[i].station.adrMAC.entier == adrSrc.entier)
+        if (g->sommet[i].station.adrMac.entier == adrSrc.entier)
         {
             source = g->sommet[i];
         }
-        else if (g->sommet[i].station.adrMAC.entier == adrDest.entier)
+        else if (g->sommet[i].station.adrMac.entier == adrDest.entier)
         {
             destination = g->sommet[i];
         }
     }
 
+    printf("Envoi de la trame de %s à %s\n", source.station.adrMac.bytes, destination.station.adrMac.bytes);
     return sont_connectes(g, source, destination); // Retourne true si l'envoi a réussi
 }
