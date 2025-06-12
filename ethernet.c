@@ -167,6 +167,12 @@ bool envoyer_tram(const Trame *trame, graphe *g)
         }
     }
 
-    printf("Envoi de la trame de %s à %s\n", source.station.adrMac.bytes, destination.station.adrMac.bytes);
-    return sont_connectes(g, source, destination); // Retourne true si l'envoi a réussi
+    if (sont_connectes(g, source, destination))
+    {
+        printf("Envoi de la trame de %s à %s\n", source.station.adrMac.bytes, destination.station.adrMac.bytes);
+        return true;
+    }
+
+    printf("Echec de l'envoi de la trame de %s à %s\n", source.station.adrMac.bytes, destination.station.adrMac.bytes);
+    return false;
 }
