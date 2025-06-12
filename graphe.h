@@ -36,9 +36,7 @@ typedef struct sommet
     };
 } sommet;
 
-/**
- * @brief Structure représentant une arête du graphe.
- */
+
 typedef struct arete
 {
     sommet s1;    /**< Premier sommet */

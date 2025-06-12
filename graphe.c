@@ -128,9 +128,6 @@ void ajouter_sommet(graphe *g, sommet s_sommet)
 /**
 
  * @brief Retourne l'index d'un sommet dans le graphe, ou UNKNOWN_INDEX s'il n'existe pas.
- * @param g Pointeur constant vers le graphe.
- * @param s Sommet à rechercher.
- * @return Index du sommet ou UNKNOWN_INDEX.
  */
 size_t index_sommet(graphe const *g, sommet s)
 {
@@ -237,13 +234,7 @@ bool ajouter_arete(graphe *g, arete a)
 }
 
 
-/**
 
- * @brief Retourne l'index d'une arête dans le graphe, ou UNKNOWN_INDEX si elle n'existe pas.
- * @param g Pointeur constant vers le graphe.
- * @param a Arête à rechercher.
- * @return Index de l'arête ou UNKNOWN_INDEX.
- */
 size_t index_arete(graphe const *g, arete a)
 {
     // retourne l'index de l'arête au sein du tableau d'arêtes de g si l'arête a existe dans g,
@@ -263,13 +254,7 @@ size_t index_arete(graphe const *g, arete a)
     return UNKNOWN_INDEX;
 }
 
-/**
- * @brief Remplit un tableau avec les sommets adjacents à un sommet donné.
- * @param g Pointeur constant vers le graphe.
- * @param s Sommet dont on cherche les adjacents.
- * @param sa Tableau de sommets à remplir.
- * @return Nombre de sommets adjacents trouvés.
- */
+
 size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[])
 {
     int nb_sommets_stockes = 0;
@@ -293,9 +278,6 @@ size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[])
 
 /**
  * @brief Visite récursivement les sommets d'une composante connexe.
- * @param g Pointeur constant vers le graphe.
- * @param s Sommet de départ pour la visite.
- * @param visite Tableau de booléens indiquant si un sommet a été visité.
  */
 void visite_composante_connexe(graphe const *g, sommet s, bool *visite)
 {
@@ -312,11 +294,7 @@ void visite_composante_connexe(graphe const *g, sommet s, bool *visite)
     }
 }
 
-/**
- * @brief Compte le nombre de composantes connexes dans le graphe.
- * @param g Pointeur constant vers le graphe.
- * @return Nombre de composantes connexes.
- */
+
 uint32_t nb_composantes_connexes(graphe const *g)
 {
     bool *visite = malloc(g->ordre * sizeof(bool));
@@ -342,13 +320,7 @@ uint32_t nb_composantes_connexes(graphe const *g)
     return nb_composante_conn;
 }
 
-/**
- * @brief Vérifie si deux sommets sont connectés dans le graphe.
- * @param g Pointeur constant vers le graphe.
- * @param s1 Premier sommet.
- * @param s2 Deuxième sommet.
- * @return true si les sommets sont connectés, false sinon.
- */
+
 bool sont_connectes(graphe const *g, sommet s1, sommet s2)
 {
     bool *sommets_visite = calloc(g->ordre, sizeof(bool));
@@ -367,11 +339,7 @@ bool sont_connectes(graphe const *g, sommet s1, sommet s2)
     return est_connecte;
 }
 
-/**
- * @brief Affiche un tableau d'entiers.
- * @param tab Tableau à afficher.
- * @param taille Taille du tableau.
- */
+
 void afficher_tab(size_t tab[], size_t taille)
 {
     for (size_t i = 0; i < taille; i++)
@@ -380,10 +348,6 @@ void afficher_tab(size_t tab[], size_t taille)
     }
 }
 
-/**
- * @brief Affiche un sommet (station ou switch).
- * @param s Sommet à afficher.
- */
 void afficher_sommet(sommet s)
 {
     if (s.type_equipement == TYPE_STATION)
@@ -396,11 +360,7 @@ void afficher_sommet(sommet s)
     }
 }
 
-/**
 
- * @brief Affiche une arête du graphe.
- * @param a Arête à afficher.
- */
 void afficher_arete(arete a)
 {
     printf("(");
@@ -410,11 +370,7 @@ void afficher_arete(arete a)
     printf(") Poids: %lu\n", a.poids);
 }
 
-/**
 
- * @brief Affiche l'ensemble du graphe (équipements et liens).
- * @param g Pointeur constant vers le graphe à afficher.
- */
 void afficher_graphe(graphe const *g)
 {
     printf("# Nombre d'équipements : %lu\n", g->ordre);
