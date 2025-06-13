@@ -8,21 +8,14 @@ void init_trame(Trame *trame, adresseMAC adrDest, adresseMAC adrSrc, uint16_t ty
         return;
     }
 
-    // Initialisation du preambule
+    
     for (int i = 0; i < 7; i++)
     {
         trame->preambule[i] = 0xAA;
     }
-
-    // Initialisation du SFD
     trame->SFD = 0xAB;
-
-    // Initialisation des adresses MAC
     trame->adrDest = adrDest;
-    trame->adrSrc = adrSrc;
-
-    // Initialisation du type
-    trame->type = type;
+    trame->adrSrc = adrSrc;trame->type = type;
 
     // Initialisation des données
     if (data != NULL && data_length > 0)
@@ -119,42 +112,107 @@ void afficher_tram_user(const Trame *trame)
 
     printf("FCS: %08x\n", trame->FCS);
 }
-
-/**
- * @brief Envoie une trame Ethernet à travers le graphe.
- */
-bool envoyer_tram(const Trame *trame, graphe *g)
-{
-    if (trame == NULL)
-    {
-        fprintf(stderr, "Erreur d'envoi de la trame: trame est NULL\n");
-        return false; // Retourne false si la trame est NULL
+bool detct_cycle_recursif(graphe *g, int current, int parent, bool visited[]) {
+    visited[current] = true;
+    sommet voisins[NOMBRE_SOMMETS_MAX];
+    size_t nb_voisins = sommets_adjacents(g, g->sommet[current], voisins);
+    
+    for (size_t i = 0; i < nb_voisins; i++) {
+        int idx = index_sommet(g, voisins[i]);
+        if (!visited[idx]) {
+            if (detct_cycle_recursif(g, idx, current, visited))
+                return true;
+        } else if (idx != parent) {
+            // Cycle détecté : le voisin déjà visité n'est pas le parent.
+            return true;
+        }
     }
+    return false;
+}
+
+bool detecter_cycle(graphe *g) {
+    bool *visited = malloc(g->ordre * sizeof(bool));
+    if (visited==NULL) {
+        fprintf(stderr, "Erreur d'allocation de mémoire\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (size_t i = 0; i < g->ordre; i++) {
+        visited[i] = false; // 0 en C
+    }
+
+    bool cycle = false;
+    for (size_t i = 0; i < g->ordre; i++) {
+        if (!visited[i]) {
+            if (detct_cycle_recursif(g, i, -1, visited)) {
+                cycle = true;
+                break;
+            }
+        }
+    }
+    free(visited);
+    return cycle;
+}
+
+
+
+bool envoyer_tram(const Trame *trame, graphe *g) {
+    if (trame == NULL) {
+        printf("Erreur d'envoi de la trame : trame est NULL\n");
+        return false;
+    }
+
 
     adresseMAC adrDest = trame->adrDest;
     adresseMAC adrSrc = trame->adrSrc;
 
-    sommet source;
-    sommet destination;
+    sommet *source = NULL;
+    sommet *destination = NULL;
 
-    for (size_t i = 0; i < g->ordre; i++)
-    {
-        if (g->sommet[i].station.adrMac.entier == adrSrc.entier)
-        {
-            source = g->sommet[i];
+    // Recherche des sommets correspondants aux adresses MAC source et destination
+    for (size_t i = 0; i < g->ordre; i++) {
+        if (equals_adresseMAC(g->sommet[i].station.adrMac, adrSrc)) {
+            source = &g->sommet[i];
         }
-        else if (g->sommet[i].station.adrMac.entier == adrDest.entier)
-        {
-            destination = g->sommet[i];
+        if (equals_adresseMAC(g->sommet[i].station.adrMac, adrDest)) {
+            destination = &g->sommet[i];
         }
     }
 
-    if (sont_connectes(g, source, destination))
-    {
-        printf("Envoi de la trame de %s à %s\n", source.station.adrMac.bytes, destination.station.adrMac.bytes);
-        return true;
+    if (!source || !destination) {
+        printf("Erreur : Source ou Destination introuvable dans le réseau.\n");
+        return false;
     }
 
-    printf("Echec de l'envoi de la trame de %s à %s\n", source.station.adrMac.bytes, destination.station.adrMac.bytes);
+    // Affichage correct des adresses MAC
+    printf("Adresse MAC source : ");
+    afficherMAC(source->station.adrMac);
+    printf("\nAdresse MAC destination : ");
+    afficherMAC(destination->station.adrMac);
+    printf("\n");
+
+    if (sont_connectes(g, *source, *destination)) {
+        if(detecter_cycle(g))//retourne vrai si cycle
+        {
+            printf("La trame de ");
+            afficherMAC(source->station.adrMac);
+            printf(", vers ");
+            afficherMAC(destination->station.adrMac);
+            printf(" n'est pas garanti si le reseau n'est pas correctement initialisé");
+            printf("\n");
+            return true;
+        }
+        else
+        {
+            printf("Envoi de la trame de ");
+            afficherMAC(source->station.adrMac);
+            printf(", vers ");
+            afficherMAC(destination->station.adrMac);
+            printf("\n");
+            return true;
+        }
+    }
+
+    printf("Échec de l'envoi : Stations non connectées.\n");
     return false;
 }
