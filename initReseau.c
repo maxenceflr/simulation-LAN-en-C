@@ -1,9 +1,6 @@
 #include "initReseau.h"
 
-/**
 
- * @brief Récupère le nombre d'équipements et de liens à partir d'une ligne de texte.
- */
 void recuperer_nbEquipement_nbLien(const char *ligne, size_t *nb_equipement, size_t *nb_lien)
 {
     if (sscanf(ligne, "%lu %lu", nb_equipement, nb_lien) == 2)
@@ -17,9 +14,7 @@ void recuperer_nbEquipement_nbLien(const char *ligne, size_t *nb_equipement, siz
     }
 }
 
-/**
- * @brief Initialise une adresse IP à partir d'une chaîne de caractères.
- */
+
 void init_adrIP_from_text(adresseIP *adrIP, const char *ip_str)
 {
     uint32_t a, b, c, d;
@@ -32,31 +27,32 @@ void init_adrIP_from_text(adresseIP *adrIP, const char *ip_str)
     adrIP->bytes[1] = (uint8_t)b;
     adrIP->bytes[2] = (uint8_t)c;
     adrIP->bytes[3] = (uint8_t)d;
+    // Calculer le champ entier dans l'ordre 
+    adrIP->entier = (a << 24) | (b << 16) | (c << 8) | d;
 }
 
-/**
 
- * @brief Initialise une adresse MAC à partir d'une chaîne de caractères.
- * @param adrMAC Pointeur vers l'adresse MAC à initialiser.
- * @param mac_str Chaîne de caractères représentant l'adresse MAC.
- */
+
 void init_adrMAC_from_text(adresseMAC *adrMAC, const char *mac_str)
 {
     unsigned int values[TAILLE_MAC_OCTETS];
-    if (sscanf(mac_str, "%x:%x:%x:%x:%x:%x", &values[0], &values[1], &values[2], &values[3], &values[4], &values[5]) != 6)
+    if (sscanf(mac_str, "%x:%x:%x:%x:%x:%x",
+               &values[0], &values[1], &values[2],
+               &values[3], &values[4], &values[5]) != 6)
     {
         fprintf(stderr, "Erreur de format MAC\n");
         exit(EXIT_FAILURE);
     }
+    adrMAC->entier = 0;
     for (int i = 0; i < TAILLE_MAC_OCTETS; i++)
+    {
         adrMAC->bytes[i] = (uint8_t)values[i];
+        // Décalage et ajout pour construire l'entier à partir des octets (big-endian)
+        adrMAC->entier = (adrMAC->entier << 8) | adrMAC->bytes[i];
+    }
 }
 
-/**
- * @brief Initialise un switch à partir d'une ligne de texte.
- * @param s_switch Pointeur vers le switch à initialiser.
- * @param switch_str Ligne de texte décrivant le switch.
- */
+
 void init_switch_from_text(Switch *s_switch, char *switch_str)
 {
     size_t bin = 0, nb_port = 0, num_priorite = 0;
@@ -73,12 +69,7 @@ void init_switch_from_text(Switch *s_switch, char *switch_str)
     init_switch(s_switch, nb_port, num_priorite, adr_MAC);
 }
 
-/**
 
- * @brief Initialise une station à partir d'une ligne de texte.
- * @param station Pointeur vers la station à initialiser.
- * @param station_str Ligne de texte décrivant la station.
- */
 void init_station_from_text(Station *station, char *station_str)
 {
     int bin = 0;

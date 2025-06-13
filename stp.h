@@ -1,18 +1,20 @@
-
 #ifndef STP_H
 #define STP_H
 
-#include <stddef.h>
-#include <stdbool.h>
 #include "graphe.h"
-#include "reseau.h" // suppose que graphe, Switch, arete, etc. sont définis ici
 
-#define INFINI SIZE_MAX
-#define UNKNOWN_INDEX ((size_t)-1)
+typedef enum {
+    AVANT,
+    EGUALE,
+    APRES,
+} SwitchCompareResult;
 
-Switch *trouver_racine(graphe *g);
-size_t trouver_sommet_min_distance(size_t distances[], bool visite[], size_t nb_sommets);
-void dijkstra(graphe *g, size_t source, size_t *distances, size_t *predecesseurs);
-void afficher_arbre_stp(graphe *g, size_t racine, size_t predecesseurs[], size_t distances[]);
+void mise_a_jour_ports_stp(graphe *g, int *prev, int switchCount, int *switch_map);
 
-#endif // STP_H
+void run_stp(graphe *g);
+
+int assigner_port(Switch *sw);
+
+void afficher_stp_resultats(graphe *g);
+
+#endif

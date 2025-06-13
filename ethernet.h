@@ -4,9 +4,7 @@
 #include "reseau.h"
 #include "graphe.h"
 
-/**
- * @brief Structure représentant une trame Ethernet.
- */
+
 typedef struct Trame
 {
     uint8_t preambule[7]; /**< Préambule Ethernet */
@@ -20,6 +18,8 @@ typedef struct Trame
 
 void init_trame(Trame *trame, adresseMAC adrDest, adresseMAC adrSrc, uint16_t type, adresseIP adrIP, const uint8_t *data, size_t data_length);
 void deinit_trame(Trame *trame);
+bool detct_cycle_recursif(graphe *g, int current, int parent, bool visited[]);
+bool detecter_cycle(graphe *g);
 void afficher_tram_user(const Trame *trame);
 bool envoyer_tram(const Trame *trame, graphe *g);
 

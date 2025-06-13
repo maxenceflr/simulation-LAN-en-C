@@ -5,7 +5,7 @@
 
 #include "reseau.h"
 
-// Définition des capacités maximales pour le graphe
+// Définition des capacités maximales(arbitraire) pour le graphe
 #define NOMBRE_ARETE_MAX 500
 #define NOMBRE_SOMMETS_MAX 500
 
@@ -13,9 +13,7 @@
 static const size_t UNKNOWN_INDEX = -1;
 
 
-/**
- * @brief Type d'équipement pour un sommet.
- */
+
 typedef enum
 {
     TYPE_SWITCH,  /**< Switch réseau */
@@ -23,9 +21,7 @@ typedef enum
 } TypeTag;
 
 
-/**
- * @brief Structure représentant un sommet du graphe (station ou switch).
- */
+
 typedef struct sommet
 {
     TypeTag type_equipement; /**< Type d'équipement */

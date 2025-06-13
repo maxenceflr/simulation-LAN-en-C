@@ -6,11 +6,7 @@ void afficherIP(adresseIP adresse)
     printf("%u.%u.%u.%u", adresse.bytes[0], adresse.bytes[1], adresse.bytes[2], adresse.bytes[3]);
 }
 
-/**
 
- * @brief Affiche une adresse MAC au format hexadécimal séparé par des ':'.
- * @param adresse L'adresse MAC à afficher.
- */
 void afficherMAC(adresseMAC adresse)
 {
     for (int i = 0; i < TAILLE_MAC_OCTETS; i++)
@@ -21,11 +17,7 @@ void afficherMAC(adresseMAC adresse)
     }
 }
 
-/**
 
- * @brief Affiche les informations d'un switch réseau.
- * @param sswitch Le switch à afficher.
- */
 void afficherSwitch(Switch sswitch)
 {
     printf("Switch SW%lu", sswitch.id);
@@ -35,11 +27,7 @@ void afficherSwitch(Switch sswitch)
     printf("\n\t- Priorité: %lu\n", sswitch.priorite);
 }
 
-/**
 
- * @brief Affiche les informations d'une station réseau.
- * @param station La station à afficher.
- */
 void afficherStation(Station station)
 {
     printf("Station ST%lu", station.id);
@@ -50,11 +38,7 @@ void afficherStation(Station station)
     printf("\n");
 }
 
-/**
 
- * @brief Affiche la table de commutation d'un switch.
- * @param r_switch Le switch dont la table de commutation doit être affichée.
- */
 void afficherTableCommutation(Switch r_switch)
 {
     for (size_t i = 0; i < r_switch.nb_ports; i++)
@@ -72,10 +56,7 @@ void afficherTableCommutation(Switch r_switch)
     }
 }
 
-/**
 
- * @brief Initialise une station avec une adresse IP et MAC.
- */
 void init_station(Station *station, adresseIP adrIP, adresseMAC adrMAC)
 {
     station->id = 0;
@@ -83,10 +64,7 @@ void init_station(Station *station, adresseIP adrIP, adresseMAC adrMAC)
     station->adrMac = adrMAC;
 }
 
-/**
 
- * @brief Initialise un switch avec un nombre de ports, une priorité et une adresse MAC.
- */
 void init_switch(Switch *r_switch, size_t nbPort, size_t numPriorite, adresseMAC adrMac)
 {
     r_switch->id = 0;
@@ -101,11 +79,7 @@ void init_switch(Switch *r_switch, size_t nbPort, size_t numPriorite, adresseMAC
     }
 }
 
-/**
 
- * @brief Libère la mémoire et réinitialise un switch.
- * @param r_switch Pointeur vers le switch à désinitialiser.
- */
 void deinit_switch(Switch *r_switch)
 {
     r_switch->nb_ports = 0;
@@ -129,10 +103,7 @@ void deinit_switch(Switch *r_switch)
     r_switch = NULL;
 }
 
-/**
 
- * @brief Initialise un port réseau.
-*/
 void init_port(port *r_port)
 {
     r_port->nb_adressesMAC = 0;
@@ -141,10 +112,7 @@ void init_port(port *r_port)
     r_port->etat=STP_INCONNU; 
 }
 
-/**
 
- * @brief Libère la mémoire d'un port réseau.
- */
 void deinit_port(port *r_port)
 {
     r_port->nb_adressesMAC = 0;
@@ -153,9 +121,7 @@ void deinit_port(port *r_port)
     r_port->tab_adresseMAC = NULL;
 }
 
-/**
- * @brief Ajoute une adresse MAC à un port, si la capacité n'est pas dépassée.
- */
+
 void ajouter_adresse_port(port *port, adresseMAC adrMAC)
 {
     if (port->nb_adressesMAC >= port->adresses_capacite)
@@ -205,21 +171,6 @@ bool equals_station(Station s1, Station s2)
 
 bool equals_switch(Switch s1, Switch s2)
 {
-    bool first_step = s1.adrMac.entier == s2.adrMac.entier && s1.nb_ports == s2.nb_ports && s1.priorite == s2.priorite;
-
-    if (first_step)
-    {
-        for (size_t i = 0; i < s1.nb_ports; i++)
-        {
-            if (!equals_port(s1.tab_commutation[i], s2.tab_commutation[i]))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return s1.adrMac.entier == s2.adrMac.entier;
 }
+

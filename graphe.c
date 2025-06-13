@@ -141,13 +141,7 @@ size_t index_sommet(graphe const *g, sommet s)
     return UNKNOWN_INDEX;
 }
 
-/**
 
- * @brief Compare deux sommets pour vérifier s'ils sont identiques.
- * @param s1 Premier sommet.
- * @param s2 Deuxième sommet.
- * @return true si les sommets sont identiques, false sinon.
- */
 bool equals_sommet(sommet s1, sommet s2)
 {
     if (s1.type_equipement == s2.type_equipement)
@@ -163,24 +157,13 @@ bool equals_sommet(sommet s1, sommet s2)
     }
 }
 
-/**
 
- * @brief Inverse les sommets d'une arête.
- * @param a Arête à inverser.
- * @return Nouvelle arête avec les sommets inversés.
- */
 arete swap_sommets(arete a)
 {
     return (arete){a.s2, a.s1, a.poids};
 }
 
-/**
 
- * @brief Compare deux arêtes pour vérifier si elles sont identiques.
- * @param a1 Première arête.
- * @param a2 Deuxième arête.
- * @return true si les arêtes sont identiques, false sinon.
- */
 bool equalsArete(arete a1, arete a2)
 {
     return ((equals_sommet(a1.s1, a2.s1) && equals_sommet(a1.s2, a2.s2)) ||
@@ -188,13 +171,7 @@ bool equalsArete(arete a1, arete a2)
            (a1.poids == a2.poids);
 }
 
-/**
 
- * @brief Vérifie si une arête existe déjà dans le graphe.
- * @param g Pointeur constant vers le graphe.
- * @param a Arête à rechercher.
- * @return true si l'arête existe, false sinon.
- */
 bool existe_arete(graphe const *g, arete a)
 {
     for (size_t i = 0; i < g->nb_aretes; ++i)
@@ -207,13 +184,7 @@ bool existe_arete(graphe const *g, arete a)
     return false;
 }
 
-/**
 
- * @brief Ajoute une arête au graphe si elle est valide et n'existe pas déjà.
- * @param g Pointeur vers le graphe.
- * @param a Arête à ajouter.
- * @return true si l'arête a été ajoutée, false sinon.
- */
 bool ajouter_arete(graphe *g, arete a)
 {
     if (g->nb_aretes >= g->aretes_capacite)
@@ -221,13 +192,12 @@ bool ajouter_arete(graphe *g, arete a)
         fprintf(stderr, "Capacité maximale d'arêtes atteinte\n");
         return false;
     }
-/*FAIT BUGGER LE CODE
-    if (existe_arete(g, a)) // Optionnel : éviter doublons
+    if (existe_arete(g, a)) 
     {
         fprintf(stderr, "Arête déjà existante\n");
         return false;
     }
-*/
+
     g->aretes[g->nb_aretes] = a;
     g->nb_aretes++;
     return true;
@@ -276,9 +246,7 @@ size_t sommets_adjacents(graphe const *g, sommet s, sommet sa[])
     return nb_sommets_stockes;
 }
 
-/**
- * @brief Visite récursivement les sommets d'une composante connexe.
- */
+//Visite récursivement les sommets d'une composante connexe.
 void visite_composante_connexe(graphe const *g, sommet s, bool *visite)
 {
     visite[index_sommet(g, s)] = true;
