@@ -115,7 +115,7 @@ void init_arete_from_text(graphe *g, arete *a, char *arete_str)
     else
     {
        
-        a->poids = 1;//Arbitraire, ce sera le poids entre station et switch
+        a->poids = 123;//Arbitraire, ce sera le poids entre station et switch
     }
 }
 
