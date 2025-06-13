@@ -92,9 +92,9 @@ void init_station_from_text(Station *station, char *station_str)
 
 void init_arete_from_text(graphe *g, arete *a, char *arete_str)
 {
-    size_t index_sommet_1, index_sommet_2, poids = 0;
-
-    if (sscanf(arete_str, "%lu;%lu;%lu", &index_sommet_1, &index_sommet_2, &poids) != 3)
+    size_t index_sommet_1, index_sommet_2;
+    size_t debit; // débit en Mb/s
+    if (sscanf(arete_str, "%lu;%lu;%lu", &index_sommet_1, &index_sommet_2, &debit) != 3)
     {
         fprintf(stderr, "Format de la ligne arete invalide : %s\n", arete_str);
         return;
@@ -102,7 +102,21 @@ void init_arete_from_text(graphe *g, arete *a, char *arete_str)
 
     a->s1 = g->sommet[index_sommet_1];
     a->s2 = g->sommet[index_sommet_2];
-    a->poids = poids;
+
+    // Conversion du débit en poids selon les références STP.
+    //le choix de     10Mb/s = 100, 100Mb/s = 10;  1Gb/s  = 1 permet de pouvoir choisir le chemin le plus court a la racine 
+    //mais permet aussi  de garder la proportionaliter entre  10Mb/s , 100Mb/s ,  1Gb/s  = 1
+    if (debit == 4)
+        a->poids = 1;
+    else if (debit == 19)
+        a->poids = 10;
+    else if (debit == 100)
+        a->poids = 100;
+    else
+    {
+       
+        a->poids = 1;//Arbitraire, ce sera le poids entre station et switch
+    }
 }
 
 
