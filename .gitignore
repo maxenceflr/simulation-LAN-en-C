@@ -2,7 +2,6 @@
 *.d
 
 # Object files
-.vscode
 *.o
 *.ko
 *.obj
@@ -54,3 +53,9 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# VS Code settings
+.vscode/
+
+# Swap files
+*.swp
